@@ -10,7 +10,8 @@ without it. Running one adds:
 - **An MCP endpoint** so AI agents can log food and read your status _(S6)_.
 - **A shared recipe library** across the people on the server _(S7)_.
 
-Status: **S0 (scaffold) and S1 (accounts) are done.** Sync, the web app, MCP and sharing follow. The plan is
+Status: **S0 (scaffold), S1 (accounts) and S2 (sync server) are done.** The app's sync client, the web app, MCP and
+sharing follow. The plan is
 [`plans/plan-11-server.md`](https://github.com/saching13/MacroTracker/blob/main/plans/plan-11-server.md) in the app
 repo.
 
@@ -110,6 +111,25 @@ token immediately and refuses its refresh token. A password change or reset sign
 Accounts are **invite-only**, with two roles (`admin`, `member`). The server always keeps at least one admin. Deleting
 an account removes all of its data. Security events (logins, failures, tokens, admin actions) go to an audit log
 (`GET /v1/admin/audit`).
+
+### Sync
+
+The app keeps its own database and syncs row by row (`/v1/sync/*`, signed-in devices only):
+
+- **Push** sends local changes (`insert` / `update` / `delete`, each with a client-made `change_id`). Every change gets
+  its own result: `applied`, `stale` (the server has something newer; the reply carries it) or `rejected` (invalid).
+  Retrying a change is harmless.
+- **Pull** returns the current state of every row changed after a cursor (`since`), oldest first, in pages. Each
+  account has one counter (`rev`) across all its tables.
+- **Conflicts** go to the most recent edit, timed by the server's clock: replies carry `server_now`, and a push's stamps
+  are shifted by the gap between the phone's clock and the server's, so a phone with a wrong clock doesn't win (or
+  lose) every conflict.
+- **Deletes** leave a tombstone. A later edit from another phone doesn't bring the row back; only re-creating it (undo)
+  does. Nothing is ever deleted because a list was shorter.
+- **Bootstrap** uploads an app's existing data when it first connects: rows the server lacks are added, and the server
+  keeps its version of the rest.
+- What syncs: profile, weights, body measurements, your own foods (not the built-in USDA/INDB ones), servings, recipes,
+  diary, goals, programs, targets and a few per-person settings. Progress photos and device settings stay on the phone.
 
 ## Develop
 

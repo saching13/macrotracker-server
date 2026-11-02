@@ -27,6 +27,12 @@ which sits on the same network as the test `db` and `auth`.
 - **Personal access tokens can't do account management** (`sessionOnly`). Add a scope only when the endpoints that
   check it ship.
 - **Audit** security-relevant actions with `audit()`.
+- **Synced tables mirror the app's Drift tables** column for column (`db/schema.ts`), keyed `(user_id, id)`, with no
+  foreign keys between them. Row shapes live in `packages/shared/src/sync/rows.ts`; a column added later must be
+  `.optional()` there so older apps don't wipe it. Bump `SYNC_SCHEMA` when the app's schema version changes. Every
+  write to a synced table (sync, and later web/MCP) goes through `services/sync.ts` so it takes the account's next
+  `rev` under the counter lock; never write those tables directly.
+- **Reference foods (USDA, INDB) never reach the server.** INDB may not be redistributed.
 - Free and self-hostable only: no paid services, no SMTP requirement.
 
 ## Testing
@@ -34,4 +40,6 @@ which sits on the same network as the test `db` and `auth`.
 - `test/unit`: no database; `buildApp` with a fake `Database`.
 - `test/int`: real Postgres + GoTrue. Use `helpers.ts` (`createUser`, `session`, `owner` pool for arranging data).
   Every new user-data table gets an RLS isolation test in `rls.test.ts`.
+- `sync-convergence.test.ts` is the sync protocol's safety net: seeded random edits on three devices must converge.
+  Run a failing seed alone to debug it; don't loosen the assertions.
 - American English in code, comments and docs.

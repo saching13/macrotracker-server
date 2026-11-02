@@ -466,6 +466,274 @@
           "created_at"
         ]
       },
+      "SyncRowStateInput": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "string",
+            "enum": [
+              "user_profile",
+              "weight_entries",
+              "body_metric_entries",
+              "foods",
+              "food_servings",
+              "recipes",
+              "recipe_items",
+              "log_entries",
+              "programs",
+              "goals",
+              "targets",
+              "app_meta"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "changed_at": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "row": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "The row as the app stores it (snake_case columns); see packages/shared/src/sync/rows.ts."
+          }
+        },
+        "required": [
+          "table",
+          "id",
+          "rev",
+          "changed_at",
+          "deleted"
+        ]
+      },
+      "SyncResultInput": {
+        "type": "object",
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "applied",
+              "stale",
+              "rejected"
+            ]
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SyncRowStateInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "change_id",
+          "result",
+          "duplicate"
+        ]
+      },
+      "SyncPushResponseInput": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncResultInput"
+            }
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "results",
+          "rev",
+          "server_now"
+        ]
+      },
+      "SyncPullResponseInput": {
+        "type": "object",
+        "properties": {
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncRowStateInput"
+            }
+          },
+          "next": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "changes",
+          "next",
+          "has_more",
+          "server_now"
+        ]
+      },
+      "SyncBootstrapResponseInput": {
+        "type": "object",
+        "properties": {
+          "inserted": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "skipped": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "rejected": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "index",
+                "code",
+                "message"
+              ]
+            }
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "inserted",
+          "skipped",
+          "rejected",
+          "rev",
+          "server_now"
+        ]
+      },
+      "SyncStatusInput": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "server_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "max": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ]
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "server_id",
+          "rev",
+          "empty",
+          "schema",
+          "server_now"
+        ]
+      },
       "Error": {
         "type": "object",
         "properties": {
@@ -922,6 +1190,283 @@
           "request_id",
           "details",
           "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "SyncRowState": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "string",
+            "enum": [
+              "user_profile",
+              "weight_entries",
+              "body_metric_entries",
+              "foods",
+              "food_servings",
+              "recipes",
+              "recipe_items",
+              "log_entries",
+              "programs",
+              "goals",
+              "targets",
+              "app_meta"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "changed_at": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "row": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "The row as the app stores it (snake_case columns); see packages/shared/src/sync/rows.ts."
+          }
+        },
+        "required": [
+          "table",
+          "id",
+          "rev",
+          "changed_at",
+          "deleted"
+        ],
+        "additionalProperties": false
+      },
+      "SyncResult": {
+        "type": "object",
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "applied",
+              "stale",
+              "rejected"
+            ]
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SyncRowState"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "change_id",
+          "result",
+          "duplicate"
+        ],
+        "additionalProperties": false
+      },
+      "SyncPushResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncResult"
+            }
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "results",
+          "rev",
+          "server_now"
+        ],
+        "additionalProperties": false
+      },
+      "SyncPullResponse": {
+        "type": "object",
+        "properties": {
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncRowState"
+            }
+          },
+          "next": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "changes",
+          "next",
+          "has_more",
+          "server_now"
+        ],
+        "additionalProperties": false
+      },
+      "SyncBootstrapResponse": {
+        "type": "object",
+        "properties": {
+          "inserted": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "skipped": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "rejected": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "index",
+                "code",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "inserted",
+          "skipped",
+          "rejected",
+          "rev",
+          "server_now"
+        ],
+        "additionalProperties": false
+      },
+      "SyncStatus": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "server_id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "rev": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "max": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "additionalProperties": false
+          },
+          "server_now": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "server_id",
+          "rev",
+          "empty",
+          "schema",
+          "server_now"
         ],
         "additionalProperties": false
       }
@@ -2020,6 +2565,375 @@
                   "items": {
                     "$ref": "#/components/schemas/AuditEvent"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sync/status": {
+      "get": {
+        "summary": "Account and server identity, current rev",
+        "tags": [
+          "sync"
+        ],
+        "description": "Called when the app connects, to decide between uploading its data, merging, or replacing it.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sync/push": {
+      "post": {
+        "summary": "Send local changes",
+        "tags": [
+          "sync"
+        ],
+        "description": "Each change gets its own result. Retrying a change id is harmless. Stale and duplicate results carry the row's current server state.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_version": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "client_now": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "changes": {
+                    "maxItems": 500,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "change_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "table": {
+                          "type": "string",
+                          "enum": [
+                            "user_profile",
+                            "weight_entries",
+                            "body_metric_entries",
+                            "foods",
+                            "food_servings",
+                            "recipes",
+                            "recipe_items",
+                            "log_entries",
+                            "programs",
+                            "goals",
+                            "targets",
+                            "app_meta"
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "op": {
+                          "type": "string",
+                          "enum": [
+                            "insert",
+                            "update",
+                            "delete"
+                          ]
+                        },
+                        "changed_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        },
+                        "row": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {},
+                          "description": "The row as the app stores it (snake_case columns); see packages/shared/src/sync/rows.ts."
+                        }
+                      },
+                      "required": [
+                        "change_id",
+                        "table",
+                        "id",
+                        "op",
+                        "changed_at"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "schema_version",
+                  "client_now",
+                  "changes"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncPushResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sync/pull": {
+      "get": {
+        "summary": "Fetch changes after a rev",
+        "tags": [
+          "sync"
+        ],
+        "description": "Returns the current state of each row changed after `since`, in rev order. 409 `cursor_ahead` means the server is behind the app (restored from a backup); pull again from 0.",
+        "parameters": [
+          {
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "since",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 500,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncPullResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sync/bootstrap": {
+      "post": {
+        "summary": "Upload an app's existing data on first connect",
+        "tags": [
+          "sync"
+        ],
+        "description": "Adds rows the server doesn't have; rows it already has (or has deleted) keep the server's version. Send in batches, then pull from 0.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_version": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "rows": {
+                    "minItems": 1,
+                    "maxItems": 1000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "table": {
+                          "type": "string",
+                          "enum": [
+                            "user_profile",
+                            "weight_entries",
+                            "body_metric_entries",
+                            "foods",
+                            "food_servings",
+                            "recipes",
+                            "recipe_items",
+                            "log_entries",
+                            "programs",
+                            "goals",
+                            "targets",
+                            "app_meta"
+                          ]
+                        },
+                        "row": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {},
+                          "description": "The row as the app stores it (snake_case columns); see packages/shared/src/sync/rows.ts."
+                        }
+                      },
+                      "required": [
+                        "table",
+                        "row"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "schema_version",
+                  "rows"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncBootstrapResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }

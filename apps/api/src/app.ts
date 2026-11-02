@@ -21,6 +21,7 @@ import { accountRoutes } from './routes/account.js';
 import { adminRoutes } from './routes/admin.js';
 import { authRoutes } from './routes/auth.js';
 import { pageRoutes } from './routes/pages.js';
+import { syncRoutes } from './routes/sync.js';
 import { systemRoutes } from './routes/system.js';
 import { GoTrue } from './services/gotrue.js';
 import { version } from './version.js';
@@ -147,6 +148,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   await app.register(authRoutes, { prefix: '/v1/auth' });
   await app.register(accountRoutes, { prefix: '/v1' });
   await app.register(adminRoutes, { prefix: '/v1/admin' });
+  await app.register(syncRoutes, { prefix: '/v1/sync' });
   await app.register(pageRoutes);
 
   app.get('/v1/openapi.json', { schema: { hide: true } }, async () => app.swagger());
