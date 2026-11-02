@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Supply-chain hygiene: never install a version published less than 7 days ago.
+minimumReleaseAge: 10080
+onlyBuiltDependencies:
+  - esbuild

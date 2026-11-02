@@ -1,0 +1,25 @@
+{
+  "name": "@macrotracker/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:unit": "echo 'no unit tests yet'",
+    "test:int": "echo 'no integration tests'"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  }
+}

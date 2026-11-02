@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>MacroTracker</title>
+    <link rel="stylesheet" href="/assets/link.css" />
+    <script type="module" src="/assets/link.js"></script>
+  </head>
+  <body>
+    <main class="card">
+      <h1 id="title">Set your password</h1>
+      <p id="lead" class="secondary">Choose a password for your MacroTracker account.</p>
+
+      <form id="form" novalidate>
+        <label for="password">New password</label>
+        <input id="password" type="password" autocomplete="new-password" minlength="10" required />
+        <label for="confirm">Confirm password</label>
+        <input id="confirm" type="password" autocomplete="new-password" minlength="10" required />
+        <p class="hint secondary">At least 10 characters.</p>
+        <p id="error" class="error" role="alert" hidden></p>
+        <button id="submit" type="submit">Set password</button>
+      </form>
+
+      <section id="done" hidden>
+        <p>Your password is set.</p>
+        <p class="secondary">
+          Sign in from the MacroTracker app: choose <strong>Connect to a server</strong>, enter
+          <code id="server"></code> and your email.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

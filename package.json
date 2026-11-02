@@ -1,0 +1,29 @@
+{
+  "name": "macrotracker-server",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "pnpm -r test:unit",
+    "test:int": "pnpm -r test:int",
+    "gen:openapi": "pnpm --filter @macrotracker/api gen:openapi",
+    "gen:migration": "pnpm --filter @macrotracker/api gen:migration"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.0.0",
+    "globals": "^17.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}

@@ -1,0 +1,124 @@
+# MacroTracker server: Postgres + Supabase Auth (GoTrue) + the API.
+# Secrets come from .env (make env). Only the API is published; the database
+# and GoTrue stay on the internal network.
+name: macrotracker
+
+x-db-env: &db-env
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make env}
+  MT_OWNER_PASSWORD: ${MT_OWNER_PASSWORD:?run make env}
+  MT_API_PASSWORD: ${MT_API_PASSWORD:?run make env}
+
+services:
+  db:
+    image: supabase/postgres:17.6.1.136
+    restart: unless-stopped
+    environment:
+      <<: *db-env
+      POSTGRES_HOST: /var/run/postgresql
+      POSTGRES_DB: postgres
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: postgres
+      JWT_EXP: 900
+    command: ['postgres', '-c', 'config_file=/etc/postgresql/postgresql.conf', '-c', 'log_min_messages=fatal']
+    volumes:
+      - ./docker/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
+      - db-data:/var/lib/postgresql/data
+      - db-config:/etc/postgresql-custom
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-h', 'localhost']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  auth:
+    image: supabase/gotrue:v2.197.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${PUBLIC_URL:-http://localhost:8080}
+      GOTRUE_SITE_URL: ${PUBLIC_URL:-http://localhost:8080}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      # Invite-only: accounts are created by an admin through the API.
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_EXTERNAL_PHONE_ENABLED: 'false'
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: 'false'
+      # No SMTP: invite and reset links are handed to the admin to share.
+      GOTRUE_MAILER_AUTOCONFIRM: 'true'
+      GOTRUE_PASSWORD_MIN_LENGTH: 10
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: 'true'
+      GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_EXP: 900
+      GOTRUE_JWT_ISSUER: macrotracker-auth
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:?run make env}
+      GOTRUE_JWT_KEYS: ${JWT_KEYS:?run make env}
+      # Every request reaches GoTrue from the API, so per-client rate limits
+      # key on the client address the API forwards.
+      GOTRUE_RATE_LIMIT_HEADER: X-Client-IP
+      GOTRUE_RATE_LIMIT_TOKEN_REFRESH: ${GOTRUE_RATE_LIMIT_TOKEN_REFRESH:-150}
+      GOTRUE_RATE_LIMIT_VERIFY: ${GOTRUE_RATE_LIMIT_VERIFY:-30}
+      GOTRUE_MAILER_OTP_EXP: 86400
+      GOTRUE_LOG_LEVEL: warn
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:9999/health']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: macrotracker-server-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      DATABASE_URL: postgres://mt_api:${MT_API_PASSWORD}@db:5432/postgres
+      MIGRATION_DATABASE_URL: postgres://mt_owner:${MT_OWNER_PASSWORD}@db:5432/postgres
+      GOTRUE_URL: http://auth:9999
+      JWT_SECRET: ${JWT_SECRET}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      WEB_ORIGINS: ${WEB_ORIGINS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - '${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080'
+
+  # Dev/test toolbox: `make shell`, `make test` run pnpm in here, on the same
+  # network as db and auth. Not started by `make up`.
+  node:
+    profiles: ['tools']
+    image: node:22-alpine
+    working_dir: /work
+    environment:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+      PNPM_HOME: /pnpm
+      npm_config_store_dir: /pnpm/store
+      TEST_DATABASE_URL: postgres://mt_api:${MT_API_PASSWORD}@db:5432/postgres
+      TEST_MIGRATION_DATABASE_URL: postgres://mt_owner:${MT_OWNER_PASSWORD}@db:5432/postgres
+      TEST_SUPERUSER_DATABASE_URL: postgres://supabase_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_URL: http://auth:9999
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - .:/work
+      - pnpm-store:/pnpm
+    entrypoint: ['sh', '-c', 'corepack enable >/dev/null 2>&1; exec "$@"', '--']
+
+volumes:
+  db-data:
+  db-config:
+  pnpm-store:
