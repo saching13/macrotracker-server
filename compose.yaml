@@ -10,7 +10,7 @@ x-db-env: &db-env
 
 services:
   db:
-    image: supabase/postgres:17.6.1.136
+    image: supabase/postgres:17.11.0.013
     restart: unless-stopped
     environment:
       <<: *db-env
