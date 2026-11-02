@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Build context is the repo root (the workspace), e.g. `docker compose build api`.
 
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 WORKDIR /src
@@ -15,7 +15,7 @@ RUN pnpm --filter @macrotracker/shared build \
  && pnpm --filter @macrotracker/api build \
  && pnpm --filter @macrotracker/api deploy --prod --legacy /out
 
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build --chown=node:node /out ./
