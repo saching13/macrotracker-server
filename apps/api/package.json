@@ -24,7 +24,7 @@
     "@fastify/cors": "^11.0.0",
     "@fastify/helmet": "^13.0.0",
     "@fastify/rate-limit": "^11.0.0",
-    "@fastify/static": "^9.0.0",
+    "@fastify/static": "^10.1.7",
     "@fastify/swagger": "^9.0.0",
     "@macrotracker/shared": "workspace:*",
     "drizzle-orm": "^0.45.0",
