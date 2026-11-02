@@ -102,7 +102,7 @@ services:
   # network as db and auth. Not started by `make up`.
   node:
     profiles: ['tools']
-    image: node:22-alpine
+    image: node:26-alpine
     working_dir: /work
     environment:
       COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
