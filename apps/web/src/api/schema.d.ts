@@ -2684,6 +2684,87 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Apps connected with OAuth (MCP connectors) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Connection"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/connections/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Disconnect an app (its tokens stop working at once) */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3010,6 +3091,14 @@ export interface components {
             recipe_id: string;
             foods_created: number;
         };
+        ConnectionInput: {
+            /** Format: uuid */
+            id: string;
+            client_name: string;
+            scopes: string[];
+            created_at: string;
+            last_used_at: string | null;
+        };
         Error: {
             error: {
                 code: string;
@@ -3331,6 +3420,14 @@ export interface components {
         LibraryCopy: {
             recipe_id: string;
             foods_created: number;
+        };
+        Connection: {
+            /** Format: uuid */
+            id: string;
+            client_name: string;
+            scopes: string[];
+            created_at: string;
+            last_used_at: string | null;
         };
     };
     responses: never;

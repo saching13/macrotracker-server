@@ -140,7 +140,8 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
     async (req) => {
       const auth = authOf(req);
       const rows = await withContext(db, rlsFor(auth), (tx) =>
-        tx.select().from(apiTokens).orderBy(desc(apiTokens.createdAt)),
+        // OAuth access tokens show up as connections instead.
+        tx.select().from(apiTokens).where(isNull(apiTokens.grantId)).orderBy(desc(apiTokens.createdAt)),
       );
       return rows.map(toApiToken);
     },

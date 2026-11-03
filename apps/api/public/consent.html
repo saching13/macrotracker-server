@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Connect to MacroTracker</title>
+    <link rel="stylesheet" href="/assets/link.css" />
+    <script type="module" src="/assets/consent.js"></script>
+  </head>
+  <body>
+    <main class="card">
+      <h1 id="title">Connect to MacroTracker</h1>
+      <p id="lead" class="secondary">Loading…</p>
+
+      <form id="form" novalidate hidden>
+        <ul id="scopes"></ul>
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" required />
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+        <p id="error" class="error" role="alert" hidden></p>
+        <button id="approve" type="submit">Sign in and allow</button>
+        <button id="deny" type="button" class="secondary-button">Don’t allow</button>
+      </form>
+    </main>
+  </body>
+</html>

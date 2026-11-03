@@ -6,6 +6,7 @@ import { createRemoteJWKSet, errors as joseErrors, jwtVerify, type JWTVerifyGetK
 import { withContext, type RlsContext } from '../db/client.js';
 import { apiTokens, appUsers, devices } from '../db/schema.js';
 import { forbidden, unauthorized } from '../errors.js';
+import { ACCESS_PREFIX as OAUTH_ACCESS_PREFIX } from '../services/oauth.js';
 import { hashToken } from '../services/tokens.js';
 
 export interface AuthContext {
@@ -159,7 +160,11 @@ export const authPlugin = fp<AuthPluginOptions>(
       return async (req) => {
         const token = bearer(req);
         if (!token) throw unauthorized();
-        const auth = token.startsWith(PAT_PREFIX) ? await fromPat(token) : await fromSession(token);
+        // Personal access tokens and OAuth access tokens are both rows in api_tokens.
+        const auth =
+          token.startsWith(PAT_PREFIX) || token.startsWith(OAUTH_ACCESS_PREFIX)
+            ? await fromPat(token)
+            : await fromSession(token);
         if (auth.kind === 'pat') {
           if (options.sessionOnly || options.admin) {
             throw forbidden('Sign in with a password session for this', 'session_required');

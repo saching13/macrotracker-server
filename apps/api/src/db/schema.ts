@@ -109,6 +109,8 @@ export const apiTokens = app
       lastUsedAt: ts('last_used_at'),
       expiresAt: ts('expires_at'),
       revokedAt: ts('revoked_at'),
+      /** Set for short-lived access tokens issued to an OAuth client (see oauthGrants). */
+      grantId: uuid('grant_id').references((): AnyPgColumn => oauthGrants.id, { onDelete: 'cascade' }),
     },
     (t) => [
       index('api_tokens_user_idx').on(t.userId),
@@ -614,6 +616,90 @@ export const sharedRecipeCopies = app
     (t) => [
       primaryKey({ columns: [t.userId, t.sharedRecipeId] }),
       pgPolicy('shared_recipe_copies_owner', {
+        for: 'all',
+        using: sql`${t.userId} = ${currentUserId}`,
+        withCheck: sql`${t.userId} = ${currentUserId}`,
+      }),
+    ],
+  )
+  .enableRLS();
+
+/**
+ * OAuth 2.1 for MCP connectors (plan-11 S8): clients register themselves
+ * (RFC 7591), a person approves one on the consent page, and it gets
+ * short-lived access tokens (rows in api_tokens) plus a rotating refresh token.
+ */
+export const oauthClients = app
+  .table(
+    'oauth_clients',
+    {
+      id: text('id').primaryKey(),
+      name: text('name').notNull(),
+      redirectUris: text('redirect_uris').array().notNull(),
+      /** none (public, PKCE only) | client_secret_post | client_secret_basic */
+      authMethod: text('auth_method').notNull(),
+      /** SHA-256 of the client secret, for confidential clients. */
+      secretHash: text('secret_hash'),
+      createdAt: ts('created_at').notNull().defaultNow(),
+    },
+    () => [
+      // Registration is open (it grants nothing by itself); lookups happen before sign-in.
+      pgPolicy('oauth_clients_read', { for: 'select', using: sql`true` }),
+      pgPolicy('oauth_clients_register', { for: 'insert', withCheck: sql`true` }),
+    ],
+  )
+  .enableRLS();
+
+/** A person's approval of a client: its scopes and current refresh token. */
+export const oauthGrants = app
+  .table(
+    'oauth_grants',
+    {
+      id: uuid('id').primaryKey().defaultRandom(),
+      userId: uuid('user_id')
+        .notNull()
+        .references(() => appUsers.userId, { onDelete: 'cascade' }),
+      clientId: text('client_id')
+        .notNull()
+        .references(() => oauthClients.id, { onDelete: 'cascade' }),
+      scopes: text('scopes').array().notNull(),
+      refreshHash: text('refresh_hash').notNull().unique(),
+      refreshExpiresAt: ts('refresh_expires_at').notNull(),
+      createdAt: ts('created_at').notNull().defaultNow(),
+      lastUsedAt: ts('last_used_at'),
+      revokedAt: ts('revoked_at'),
+    },
+    (t) => [
+      index('oauth_grants_user_idx').on(t.userId),
+      pgPolicy('oauth_grants_owner', {
+        for: 'all',
+        using: sql`${t.userId} = ${currentUserId}`,
+        withCheck: sql`${t.userId} = ${currentUserId}`,
+      }),
+    ],
+  )
+  .enableRLS();
+
+/** Authorization codes: single use, ten minutes, bound to the PKCE challenge. */
+export const oauthCodes = app
+  .table(
+    'oauth_codes',
+    {
+      codeHash: text('code_hash').primaryKey(),
+      clientId: text('client_id')
+        .notNull()
+        .references(() => oauthClients.id, { onDelete: 'cascade' }),
+      userId: uuid('user_id')
+        .notNull()
+        .references(() => appUsers.userId, { onDelete: 'cascade' }),
+      redirectUri: text('redirect_uri').notNull(),
+      codeChallenge: text('code_challenge').notNull(),
+      scopes: text('scopes').array().notNull(),
+      expiresAt: ts('expires_at').notNull(),
+      usedAt: ts('used_at'),
+    },
+    (t) => [
+      pgPolicy('oauth_codes_owner', {
         for: 'all',
         using: sql`${t.userId} = ${currentUserId}`,
         withCheck: sql`${t.userId} = ${currentUserId}`,

@@ -43,6 +43,20 @@
       "when": 1793677159204,
       "tag": "0005_shared_recipes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793719245568,
+      "tag": "0006_oauth",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793719248338,
+      "tag": "0007_oauth_functions",
+      "breakpoints": true
     }
   ]
 }

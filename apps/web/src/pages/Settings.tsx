@@ -24,6 +24,7 @@ export function SettingsPage() {
       <Units />
       <Devices />
       <Tokens />
+      <Connections />
       <Password />
       {session?.user.role === 'admin' && <Admin />}
       <p>
@@ -204,6 +205,36 @@ function Tokens() {
         </button>
       </form>
       {create.isError && <div className="row error">{create.error.message}</div>}
+    </Section>
+  );
+}
+
+function Connections() {
+  const qc = useQueryClient();
+  const list = useQuery({ queryKey: ['connections'], queryFn: () => unwrap(api.GET('/v1/connections')) });
+  const revoke = useMutation({
+    mutationFn: (id: string) => unwrap(api.DELETE('/v1/connections/{id}', { params: { path: { id } } })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['connections'] }),
+  });
+  if (!list.data?.length) return null;
+  return (
+    <Section
+      header="Connected apps"
+      footer="Apps you allowed through the sign-in page, such as Claude connectors."
+    >
+      {list.data.map((c) => (
+        <div className="row" key={c.id}>
+          <span className="grow">
+            <div className="name">{c.client_name}</div>
+            <div className="secondary small">
+              {c.scopes.map((s) => SCOPE_LABELS[s] ?? s).join(' · ')} · last used {when(c.last_used_at)}
+            </div>
+          </span>
+          <button className="button danger" type="button" onClick={() => revoke.mutate(c.id)}>
+            Disconnect
+          </button>
+        </div>
+      ))}
     </Section>
   );
 }

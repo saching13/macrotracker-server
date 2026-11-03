@@ -99,3 +99,19 @@ button:disabled {
 code {
   word-break: break-all;
 }
+
+.secondary-button {
+  margin-top: 8px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+}
+
+ul {
+  padding-left: 20px;
+  margin: 0 0 16px;
+}
+
+li {
+  margin: 6px 0;
+}

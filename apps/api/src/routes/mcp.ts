@@ -481,6 +481,15 @@ function buildServer(
  */
 export const mcpRoutes: FastifyPluginAsync<{ config: Config }> = async (app, { config }) => {
   if (!config.MCP_ENABLED) return;
+  // Tells connectors where to sign in (MCP authorization spec, RFC 9728).
+  app.addHook('onSend', async (_req, reply) => {
+    if (reply.statusCode === 401) {
+      reply.header(
+        'www-authenticate',
+        `Bearer resource_metadata="${config.PUBLIC_URL}/.well-known/oauth-protected-resource"`,
+      );
+    }
+  });
   const data = new DataService(app.deps.db);
   const library = new LibraryService(app.deps.db);
 
