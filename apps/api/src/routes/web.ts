@@ -8,7 +8,7 @@ import type { FastifyPluginAsync } from 'fastify';
 export const webDir = new URL('../../web/', import.meta.url);
 
 /** The web app's pages; each serves the same document and the app routes itself. */
-export const WEB_PAGES = ['/', '/diary', '/weight', '/settings'];
+export const WEB_PAGES = ['/', '/diary', '/recipes', '/weight', '/settings'];
 
 /**
  * Serves the React web app from the same origin as the API, so its session

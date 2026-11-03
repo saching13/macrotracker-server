@@ -65,7 +65,7 @@ async function account(scopes: string[]) {
     (
       await main.app.inject({ url: '/v1/sync/pull?since=0&limit=1000', headers: phone })
     ).json<SyncPullResponse>();
-  return { token: t.json<{ token: string }>().token, pull };
+  return { token: t.json<{ token: string }>().token, phoneToken: s.access_token, pull };
 }
 
 async function connect(token: string, target = main) {
@@ -181,6 +181,47 @@ describe('MCP', () => {
     expect((await call('delete_entry', { entry_id: e.id, confirm: true })).json()).toEqual({ deleted: e.id });
     const day = (await call('get_day', { date: '2026-11-01' })).json() as { entries: unknown[] };
     expect(day.entries).toEqual([]);
+  });
+
+  it('shares a recipe and adds one from the library', async () => {
+    const a = await account(['mcp:read', 'mcp:write']);
+    const b = await account(['mcp:read', 'mcp:write']);
+    // a's phone has a recipe made of its own food.
+    const phoneRecipe = {
+      table: 'recipes',
+      row: sampleRow('recipes', { id: 'jar-oats', name: 'Jar of oats', servings: 1, total_kcal: 375 }),
+    };
+    const item = {
+      table: 'recipe_items',
+      row: sampleRow('recipe_items', {
+        id: 'jar-oats_oats',
+        recipe_id: 'jar-oats',
+        food_id: 'oats',
+        quantity: 250,
+      }),
+    };
+    const tokenA = (await connect(a.token)).call;
+    await main.app.inject({
+      method: 'POST',
+      url: '/v1/sync/bootstrap',
+      headers: bearer(a.phoneToken),
+      payload: { schema_version: SYNC_SCHEMA.max, rows: [phoneRecipe, item] },
+    });
+    expect((await tokenA('share_recipe', { recipe_id: 'jar-oats' })).isError).toBe(true); // no confirm
+    const shared = (await tokenA('share_recipe', { recipe_id: 'jar-oats', confirm: true })).json() as {
+      id: string;
+    };
+
+    const { call } = await connect(b.token);
+    const found = (await call('search_shared_recipes', { query: 'jar of oats' })).json() as {
+      recipes: { id: string }[];
+    };
+    expect(found.recipes.map((r) => r.id)).toContain(shared.id);
+    const added = (await call('add_shared_recipe', { shared_recipe_id: shared.id })).json() as {
+      recipe_id: string;
+    };
+    const logged = (await call('log_recipe', { recipe_id: added.recipe_id, date: '2026-11-02' })).json();
+    expect(logged).toMatchObject({ name: 'Jar of oats', kcal: 375 });
   });
 
   it('turns away calls without a token, and is off when disabled', async () => {

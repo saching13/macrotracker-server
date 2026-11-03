@@ -16,6 +16,7 @@ import { Icon, OrbLoader } from './components/ui';
 import { DashboardPage } from './pages/Dashboard';
 import { DiaryPage } from './pages/Diary';
 import { LoginPage } from './pages/Login';
+import { RecipesPage } from './pages/Recipes';
 import { SettingsPage } from './pages/Settings';
 import { WeightPage } from './pages/Weight';
 import './styles.css';
@@ -33,6 +34,7 @@ const queryClient = new QueryClient({
 const TABS = [
   { to: '/', label: 'Dashboard', icon: 'dashboard' },
   { to: '/diary', label: 'Diary', icon: 'diary' },
+  { to: '/recipes', label: 'Recipes', icon: 'recipes' },
   { to: '/weight', label: 'Weight', icon: 'weight' },
   { to: '/settings', label: 'Settings', icon: 'settings' },
 ] as const;
@@ -85,6 +87,7 @@ const routes = [
     validateSearch: (s: Record<string, unknown>): { date?: string } =>
       typeof s.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.date) ? { date: s.date } : {},
   }),
+  createRoute({ getParentRoute: () => root, path: '/recipes', component: RecipesPage }),
   createRoute({ getParentRoute: () => root, path: '/weight', component: WeightPage }),
   createRoute({ getParentRoute: () => root, path: '/settings', component: SettingsPage }),
 ];

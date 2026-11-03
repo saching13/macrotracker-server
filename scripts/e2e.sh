@@ -14,9 +14,11 @@ dc up -d --build --wait db auth api
 EMAIL=e2e@example.test
 PASSWORD=e2e-password-1234
 printf '%s' "$PASSWORD" | dc exec -T api node dist/cli/create-admin.js --email "$EMAIL" --password-stdin
+# A second person, for the shared library.
+printf '%s' "$PASSWORD" | dc exec -T api node dist/cli/create-admin.js --email friend@example.test --password-stdin
 
 docker run --rm --network mt-e2e_default --ipc=host \
   -v "$PWD":/work -w /work/apps/web \
-  -e CI="${CI:-}" -e SCREENSHOTS="${SCREENSHOTS:-}" -e E2E_URL=http://api:8080 -e E2E_EMAIL="$EMAIL" -e E2E_PASSWORD="$PASSWORD" \
+  -e CI="${CI:-}" -e SCREENSHOTS="${SCREENSHOTS:-}" -e E2E_URL=http://api:8080 -e E2E_EMAIL="$EMAIL" -e E2E_EMAIL_2=friend@example.test -e E2E_PASSWORD="$PASSWORD" \
   "mcr.microsoft.com/playwright:v$PW_VERSION-noble" \
   node_modules/.bin/playwright test "$@"

@@ -2368,6 +2368,322 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/library": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Browse the shared recipes */
+        get: {
+            parameters: {
+                query?: {
+                    q?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            recipes: components["schemas"]["SharedRecipe"][];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Share one of your recipes (or update the shared copy)
+         * @description Every ingredient must be on the server: your synced foods or USDA foods. Recipes with INDB foods can’t be shared.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        recipe_id: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SharedRecipe"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/library/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A shared recipe with its ingredients */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SharedRecipe"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Remove a recipe from the library (yours, or any as an admin)
+         * @description Copies people already added stay theirs.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/library/{id}/copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a shared recipe to your recipes
+         * @description Creates your own copy (and foods for its ingredients; USDA ones are reused). It syncs to your phones. Later changes by its owner don’t change your copy.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LibraryCopy"];
+                    };
+                };
+                /** @description Default Response */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2656,6 +2972,44 @@ export interface components {
             logged_days: number;
             weigh_ins: number;
         };
+        SharedRecipeInput: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            shared_by: string;
+            servings: number;
+            total_weight_g: number | null;
+            total_kcal: number;
+            total_protein_g: number;
+            total_carb_g: number;
+            total_fat_g: number;
+            ingredients: {
+                name: string;
+                quantity: number;
+                food: {
+                    id: string;
+                    reference: boolean;
+                    name: string;
+                    brand: string | null;
+                    serving_qty: number;
+                    serving_unit: string;
+                    kcal_per_serving: number;
+                    protein_g: number;
+                    carb_g: number;
+                    fat_g: number;
+                    fiber_g: number | null;
+                };
+            }[];
+            version: number;
+            updated_at: string;
+            mine: boolean;
+            from_recipe_id: string | null;
+            added_as: string | null;
+        };
+        LibraryCopyInput: {
+            recipe_id: string;
+            foods_created: number;
+        };
         Error: {
             error: {
                 code: string;
@@ -2939,6 +3293,44 @@ export interface components {
             average_intake_kcal: number | null;
             logged_days: number;
             weigh_ins: number;
+        };
+        SharedRecipe: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            shared_by: string;
+            servings: number;
+            total_weight_g: number | null;
+            total_kcal: number;
+            total_protein_g: number;
+            total_carb_g: number;
+            total_fat_g: number;
+            ingredients: {
+                name: string;
+                quantity: number;
+                food: {
+                    id: string;
+                    reference: boolean;
+                    name: string;
+                    brand: string | null;
+                    serving_qty: number;
+                    serving_unit: string;
+                    kcal_per_serving: number;
+                    protein_g: number;
+                    carb_g: number;
+                    fat_g: number;
+                    fiber_g: number | null;
+                };
+            }[];
+            version: number;
+            updated_at: string;
+            mine: boolean;
+            from_recipe_id: string | null;
+            added_as: string | null;
+        };
+        LibraryCopy: {
+            recipe_id: string;
+            foods_created: number;
         };
     };
     responses: never;

@@ -157,6 +157,18 @@ For the web app and agents (`/v1/*`; personal access tokens need `mcp:read` / `m
 - The **USDA reference foods** (SR Legacy, 7,793 foods per 100 g) ship in `apps/api/data` and load on first boot. They
   have the same ids as the app's copy, so a food logged on the web is the one the phone already has.
 
+### Shared recipe library
+
+Everyone on a server can share recipes and add other people's to their own (`/v1/library`; web: Recipes; app: Library
+› Recipes › Shared; MCP: `search_shared_recipes`, `share_recipe`, `add_shared_recipe`).
+
+- Sharing publishes a **snapshot**: the recipe with each ingredient's nutrition embedded. Sharing it again updates the
+  library copy; people who already added it keep theirs.
+- Adding makes your own recipe (and copies of the ingredient foods; USDA foods are reused), which syncs to your phones.
+- Only foods on the server can be shared: your synced foods and the USDA foods. **INDB foods never sync, so recipes
+  with them can't be shared** (the INDB data may not be redistributed).
+- Owners remove their recipes; admins can remove any.
+
 ### MCP (AI agents)
 
 `POST /mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server (Streamable HTTP, stateless), so an
@@ -167,11 +179,11 @@ to your agent, for example Claude Code:
 claude mcp add --transport http macrotracker https://your-server/mcp --header "Authorization: Bearer mt_pat_…"
 ```
 
-| Tools                                                                                                                 | Needs                                                 |
-| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `get_status`, `get_day`, `daily_totals`, `list_diary`, `search_foods`, `recent_foods`, `list_recipes`, `list_weights` | `mcp:read`                                            |
-| `log_food`, `log_recipe`, `quick_add`, `create_food`, `log_weight`, `log_body_metric`, `update_entry`, `check_in`     | `mcp:write`, `MCP_WRITE_ENABLED`                      |
-| `delete_entry`, `delete_weight`                                                                                       | `mcp:destroy`, `MCP_DESTROY_ENABLED` (off by default) |
+| Tools                                                                                                                                          | Needs                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `get_status`, `get_day`, `daily_totals`, `list_diary`, `search_foods`, `recent_foods`, `list_recipes`, `list_weights`, `search_shared_recipes` | `mcp:read`                                            |
+| `log_food`, `log_recipe`, `quick_add`, `create_food`, `log_weight`, `log_body_metric`, `update_entry`, `check_in`                              | `mcp:write`, `MCP_WRITE_ENABLED`                      |
+| `delete_entry`, `delete_weight`                                                                                                                | `mcp:destroy`, `MCP_DESTROY_ENABLED` (off by default) |
 
 - An agent only sees the tools its token and the server allow. Changes and deletes need `confirm: true`, so the agent
   asks first.

@@ -8,6 +8,7 @@ import type { Config } from '../config.js';
 import { AppError } from '../errors.js';
 import { type AuthContext, authOf } from '../plugins/auth.js';
 import { DataService } from '../services/data.js';
+import { LibraryService } from '../services/library.js';
 import type { SyncActor } from '../services/sync.js';
 import { version } from '../version.js';
 
@@ -74,7 +75,14 @@ async function run(fn: () => Promise<unknown>) {
   }
 }
 
-function buildServer(data: DataService, actor: SyncActor, can: ReturnType<typeof allowed>, timeZone: string) {
+function buildServer(
+  data: DataService,
+  library: LibraryService,
+  actor: SyncActor,
+  can: ReturnType<typeof allowed>,
+  timeZone: string,
+  email?: string,
+) {
   const today = () => engine.localToday(new Date(), timeZone);
   /** The local time now, HH:mm. */
   const nowHm = () =>
@@ -175,6 +183,20 @@ function buildServer(data: DataService, actor: SyncActor, can: ReturnType<typeof
         annotations: read,
       },
       () => run(async () => ({ recipes: await data.recipes(actor) })),
+    );
+    server.registerTool(
+      'search_shared_recipes',
+      {
+        title: 'Shared recipe library',
+        description:
+          'Recipes people on this server have shared (by name or who shared it). add_shared_recipe copies one into the user’s recipes.',
+        inputSchema: {
+          query: z.string().max(100).optional(),
+          limit: z.number().int().min(1).max(100).optional(),
+        },
+        annotations: read,
+      },
+      ({ query, limit }) => run(async () => ({ recipes: await library.list(actor, query, limit ?? 20) })),
     );
     server.registerTool(
       'list_weights',
@@ -343,6 +365,28 @@ function buildServer(data: DataService, actor: SyncActor, can: ReturnType<typeof
       (a) => run(() => data.createFood(actor, a)),
     );
     server.registerTool(
+      'share_recipe',
+      {
+        title: 'Share a recipe',
+        description:
+          "Publishes one of the user's recipes (list_recipes) to the server's shared library, or updates their shared copy. Everyone on the server can see it. Confirm with the user first.",
+        inputSchema: { recipe_id: z.string(), confirm },
+        annotations: change,
+      },
+      ({ recipe_id }) => run(() => library.publish(actor, recipe_id, email)),
+    );
+    server.registerTool(
+      'add_shared_recipe',
+      {
+        title: 'Add a shared recipe',
+        description:
+          "Copies a recipe from the shared library into the user's own recipes, so it can be logged.",
+        inputSchema: { shared_recipe_id: z.uuid() },
+        annotations: add,
+      },
+      ({ shared_recipe_id }) => run(() => library.copy(actor, shared_recipe_id)),
+    );
+    server.registerTool(
       'log_weight',
       {
         title: 'Log a weigh-in',
@@ -438,6 +482,7 @@ function buildServer(data: DataService, actor: SyncActor, can: ReturnType<typeof
 export const mcpRoutes: FastifyPluginAsync<{ config: Config }> = async (app, { config }) => {
   if (!config.MCP_ENABLED) return;
   const data = new DataService(app.deps.db);
+  const library = new LibraryService(app.deps.db);
 
   app.post('/mcp', { preHandler: app.requireAuth(), schema: { hide: true } }, async (req, reply) => {
     const auth = authOf(req);
@@ -446,7 +491,7 @@ export const mcpRoutes: FastifyPluginAsync<{ config: Config }> = async (app, { c
       throw new AppError(403, 'insufficient_scope', 'This token has no mcp scopes');
     }
     const actor = { userId: auth.userId, deviceId: auth.deviceId ?? null };
-    const server = buildServer(data, actor, can, config.DEFAULT_TIMEZONE);
+    const server = buildServer(data, library, actor, can, config.DEFAULT_TIMEZONE, auth.email);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
       enableJsonResponse: true,

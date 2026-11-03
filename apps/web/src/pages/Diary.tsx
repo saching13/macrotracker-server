@@ -131,7 +131,13 @@ function defaultTime(date: string): string {
 }
 
 function AddSheet({ date, energy, onClose }: { date: string; energy: string; onClose: () => void }) {
-  const [mode, setMode] = useState<'search' | 'quick'>('search');
+  const [mode, setMode] = useState<'search' | 'recipes' | 'quick'>('search');
+  const [recipe, setRecipe] = useState<Schemas['Recipe'] | null>(null);
+  const recipes = useQuery({
+    queryKey: ['recipes'],
+    enabled: mode === 'recipes',
+    queryFn: () => unwrap(api.GET('/v1/recipes')),
+  });
   const [q, setQ] = useState('');
   const [picked, setPicked] = useState<Food | null>(null);
   const search = useQuery({
@@ -155,6 +161,17 @@ function AddSheet({ date, energy, onClose }: { date: string; energy: string; onC
       />
     );
   }
+  if (recipe) {
+    return (
+      <RecipeSheet
+        recipe={recipe}
+        date={date}
+        energy={energy}
+        onBack={() => setRecipe(null)}
+        onDone={onClose}
+      />
+    );
+  }
   const list = q.trim().length >= 2 ? search.data?.foods : recent.data?.foods;
   return (
     <Sheet title="Log food" onClose={onClose}>
@@ -162,12 +179,41 @@ function AddSheet({ date, energy, onClose }: { date: string; energy: string; onC
         <button type="button" aria-pressed={mode === 'search'} onClick={() => setMode('search')}>
           Search
         </button>
+        <button type="button" aria-pressed={mode === 'recipes'} onClick={() => setMode('recipes')}>
+          Recipes
+        </button>
         <button type="button" aria-pressed={mode === 'quick'} onClick={() => setMode('quick')}>
           Quick add
         </button>
       </div>
       {mode === 'quick' ? (
         <QuickAdd date={date} onDone={onClose} />
+      ) : mode === 'recipes' ? (
+        <div className="card" style={{ marginTop: 'var(--space-l)' }}>
+          {recipes.isPending && <OrbLoader message="Loading recipes…" />}
+          {(recipes.data?.recipes ?? []).map((r) => (
+            <button
+              key={r.id}
+              className="row"
+              type="button"
+              onClick={() => setRecipe(r)}
+              data-testid="recipe-result"
+            >
+              <span className="grow">
+                <div className="name">{r.name}</div>
+                <div className="secondary small">
+                  {formatEnergyNumber(r.total_kcal / (r.servings > 0 ? r.servings : 1), energy)}{' '}
+                  {energyLabel(energy)} per serving
+                </div>
+              </span>
+            </button>
+          ))}
+          {recipes.data?.recipes.length === 0 && (
+            <div className="row secondary">
+              No recipes yet: build them in the app, or add one from the library.
+            </div>
+          )}
+        </div>
       ) : (
         <>
           <label className="field">
@@ -289,6 +335,78 @@ function AmountSheet({
             </select>
           </label>
         </div>
+        <label className="field">
+          <span>Time</span>
+          <input
+            className="input"
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            required
+          />
+        </label>
+        <p className="secondary">
+          {formatEnergyNumber(kcal, energy)} {energyLabel(energy)} · {mealLabel(time)}
+        </p>
+        {log.isError && <p className="error">{log.error.message}</p>}
+        <div style={{ display: 'flex', gap: 'var(--space-m)' }}>
+          <button className="button tonal" type="button" onClick={onBack}>
+            Back
+          </button>
+          <button className="button wide" type="submit" disabled={!ok || log.isPending}>
+            {log.isPending ? 'Logging…' : 'Log'}
+          </button>
+        </div>
+      </form>
+    </Sheet>
+  );
+}
+
+function RecipeSheet({
+  recipe,
+  date,
+  energy,
+  onBack,
+  onDone,
+}: {
+  recipe: Schemas['Recipe'];
+  date: string;
+  energy: string;
+  onBack: () => void;
+  onDone: () => void;
+}) {
+  const invalidate = useInvalidate();
+  const [servings, setServings] = useState('1');
+  const [time, setTime] = useState(defaultTime(date));
+  const n = Number(servings);
+  const ok = Number.isFinite(n) && n > 0;
+  const log = useMutation({
+    mutationFn: () =>
+      unwrap(api.POST('/v1/entries', { body: { date, time, recipe_id: recipe.id, quantity: n } })),
+    onSuccess: async () => {
+      await invalidate();
+      onDone();
+    },
+  });
+  const kcal = ok ? (recipe.total_kcal * n) / (recipe.servings > 0 ? recipe.servings : 1) : 0;
+  return (
+    <Sheet title={recipe.name} onClose={onDone}>
+      <form
+        onSubmit={(e: FormEvent) => {
+          e.preventDefault();
+          if (ok) log.mutate();
+        }}
+      >
+        <label className="field">
+          <span>Servings</span>
+          <input
+            className="input"
+            inputMode="decimal"
+            value={servings}
+            onChange={(e) => setServings(e.target.value.replace(',', '.'))}
+            aria-label="Servings"
+          />
+        </label>
         <label className="field">
           <span>Time</span>
           <input

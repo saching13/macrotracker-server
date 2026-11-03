@@ -22,6 +22,7 @@ import { adminRoutes } from './routes/admin.js';
 import { authRoutes } from './routes/auth.js';
 import { pageRoutes } from './routes/pages.js';
 import { dataRoutes } from './routes/data.js';
+import { libraryRoutes } from './routes/library.js';
 import { mcpRoutes } from './routes/mcp.js';
 import { syncRoutes } from './routes/sync.js';
 import { webRoutes } from './routes/web.js';
@@ -156,6 +157,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   await app.register(adminRoutes, { prefix: '/v1/admin' });
   await app.register(syncRoutes, { prefix: '/v1/sync' });
   await app.register(dataRoutes, { prefix: '/v1' });
+  await app.register(libraryRoutes, { prefix: '/v1/library' });
   await app.register(mcpRoutes, { config });
   await app.register(pageRoutes);
   await app.register(webRoutes);

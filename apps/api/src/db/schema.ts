@@ -13,6 +13,7 @@ import {
   smallint,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
@@ -523,5 +524,100 @@ export const referenceFoods = app
       source: text('source').notNull(),
     },
     () => [pgPolicy('reference_foods_read', { for: 'select', using: sql`true` })],
+  )
+  .enableRLS();
+
+/** One ingredient as published: the food's facts embedded, so copies don't depend on the owner's data. */
+export interface SharedIngredient {
+  name: string;
+  /** Base units of the food (g/ml). */
+  quantity: number;
+  food: {
+    /** Reference foods keep their id (every app has them); the owner's own foods are copied. */
+    id: string;
+    reference: boolean;
+    name: string;
+    brand: string | null;
+    serving_qty: number;
+    serving_unit: string;
+    kcal_per_serving: number;
+    protein_g: number;
+    carb_g: number;
+    fat_g: number;
+    fiber_g: number | null;
+  };
+}
+
+/**
+ * The shared recipe library (plan-11 S7): recipes people on this server
+ * publish for everyone else to browse and copy. A snapshot, not a link: the
+ * owner's later edits republish, and copies already made stay as they were
+ * (like macros on a diary entry). Visible to every account on the server.
+ */
+export const sharedRecipes = app
+  .table(
+    'shared_recipes',
+    {
+      id: uuid('id').primaryKey().defaultRandom(),
+      ownerId: uuid('owner_id')
+        .notNull()
+        .references(() => appUsers.userId, { onDelete: 'cascade' }),
+      /** Shown as "shared by" (display name, else the email's name part), as of publishing. */
+      ownerName: text('owner_name').notNull(),
+      /** The owner's recipe it was published from; publishing it again updates this row. */
+      sourceRecipeId: text('source_recipe_id').notNull(),
+      name: text('name').notNull(),
+      servings: real('servings').notNull(),
+      totalWeightG: real('total_weight_g'),
+      totalKcal: real('total_kcal').notNull(),
+      totalProteinG: real('total_protein_g').notNull(),
+      totalCarbG: real('total_carb_g').notNull(),
+      totalFatG: real('total_fat_g').notNull(),
+      ingredients: jsonb('ingredients').$type<SharedIngredient[]>().notNull(),
+      version: integer('version').notNull().default(1),
+      createdAt: ts('created_at').notNull().defaultNow(),
+      updatedAt: ts('updated_at').notNull().defaultNow(),
+    },
+    (t) => [
+      uniqueIndex('shared_recipes_source_idx').on(t.ownerId, t.sourceRecipeId),
+      index('shared_recipes_name_idx').on(t.name),
+      pgPolicy('shared_recipes_read', { for: 'select', using: sql`${currentUserId} is not null` }),
+      pgPolicy('shared_recipes_insert', { for: 'insert', withCheck: sql`${t.ownerId} = ${currentUserId}` }),
+      pgPolicy('shared_recipes_update', {
+        for: 'update',
+        using: sql`${t.ownerId} = ${currentUserId}`,
+        withCheck: sql`${t.ownerId} = ${currentUserId}`,
+      }),
+      pgPolicy('shared_recipes_delete', {
+        for: 'delete',
+        using: sql`${t.ownerId} = ${currentUserId} or ${isAdminContext}`,
+      }),
+    ],
+  )
+  .enableRLS();
+
+/** Which library recipes an account has copied, and into which of its recipes. */
+export const sharedRecipeCopies = app
+  .table(
+    'shared_recipe_copies',
+    {
+      userId: uuid('user_id')
+        .notNull()
+        .references(() => appUsers.userId, { onDelete: 'cascade' }),
+      sharedRecipeId: uuid('shared_recipe_id')
+        .notNull()
+        .references(() => sharedRecipes.id, { onDelete: 'cascade' }),
+      recipeId: text('recipe_id').notNull(),
+      version: integer('version').notNull(),
+      createdAt: ts('created_at').notNull().defaultNow(),
+    },
+    (t) => [
+      primaryKey({ columns: [t.userId, t.sharedRecipeId] }),
+      pgPolicy('shared_recipe_copies_owner', {
+        for: 'all',
+        using: sql`${t.userId} = ${currentUserId}`,
+        withCheck: sql`${t.userId} = ${currentUserId}`,
+      }),
+    ],
   )
   .enableRLS();

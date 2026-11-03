@@ -205,10 +205,10 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 72px;
+  min-width: 60px;
   min-height: 48px;
   justify-content: center;
-  padding: var(--space-xs) var(--space-m);
+  padding: var(--space-xs) var(--space-s);
   border-radius: 999px;
   text-decoration: none;
   font-size: 12px;

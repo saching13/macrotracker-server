@@ -1339,6 +1339,176 @@
           "weigh_ins"
         ]
       },
+      "SharedRecipeInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shared_by": {
+            "type": "string"
+          },
+          "servings": {
+            "type": "number"
+          },
+          "total_weight_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "total_kcal": {
+            "type": "number"
+          },
+          "total_protein_g": {
+            "type": "number"
+          },
+          "total_carb_g": {
+            "type": "number"
+          },
+          "total_fat_g": {
+            "type": "number"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                },
+                "food": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "reference": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "brand": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "serving_qty": {
+                      "type": "number"
+                    },
+                    "serving_unit": {
+                      "type": "string"
+                    },
+                    "kcal_per_serving": {
+                      "type": "number"
+                    },
+                    "protein_g": {
+                      "type": "number"
+                    },
+                    "carb_g": {
+                      "type": "number"
+                    },
+                    "fat_g": {
+                      "type": "number"
+                    },
+                    "fiber_g": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reference",
+                    "name",
+                    "brand",
+                    "serving_qty",
+                    "serving_unit",
+                    "kcal_per_serving",
+                    "protein_g",
+                    "carb_g",
+                    "fat_g",
+                    "fiber_g"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "quantity",
+                "food"
+              ]
+            }
+          },
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "mine": {
+            "type": "boolean"
+          },
+          "from_recipe_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "added_as": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shared_by",
+          "servings",
+          "total_weight_g",
+          "total_kcal",
+          "total_protein_g",
+          "total_carb_g",
+          "total_fat_g",
+          "ingredients",
+          "version",
+          "updated_at",
+          "mine",
+          "from_recipe_id",
+          "added_as"
+        ]
+      },
+      "LibraryCopyInput": {
+        "type": "object",
+        "properties": {
+          "recipe_id": {
+            "type": "string"
+          },
+          "foods_created": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "recipe_id",
+          "foods_created"
+        ]
+      },
       "Error": {
         "type": "object",
         "properties": {
@@ -2692,6 +2862,180 @@
           "average_intake_kcal",
           "logged_days",
           "weigh_ins"
+        ],
+        "additionalProperties": false
+      },
+      "SharedRecipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shared_by": {
+            "type": "string"
+          },
+          "servings": {
+            "type": "number"
+          },
+          "total_weight_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "total_kcal": {
+            "type": "number"
+          },
+          "total_protein_g": {
+            "type": "number"
+          },
+          "total_carb_g": {
+            "type": "number"
+          },
+          "total_fat_g": {
+            "type": "number"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number"
+                },
+                "food": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "reference": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "brand": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "serving_qty": {
+                      "type": "number"
+                    },
+                    "serving_unit": {
+                      "type": "string"
+                    },
+                    "kcal_per_serving": {
+                      "type": "number"
+                    },
+                    "protein_g": {
+                      "type": "number"
+                    },
+                    "carb_g": {
+                      "type": "number"
+                    },
+                    "fat_g": {
+                      "type": "number"
+                    },
+                    "fiber_g": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reference",
+                    "name",
+                    "brand",
+                    "serving_qty",
+                    "serving_unit",
+                    "kcal_per_serving",
+                    "protein_g",
+                    "carb_g",
+                    "fat_g",
+                    "fiber_g"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "name",
+                "quantity",
+                "food"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "mine": {
+            "type": "boolean"
+          },
+          "from_recipe_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "added_as": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shared_by",
+          "servings",
+          "total_weight_g",
+          "total_kcal",
+          "total_protein_g",
+          "total_carb_g",
+          "total_fat_g",
+          "ingredients",
+          "version",
+          "updated_at",
+          "mine",
+          "from_recipe_id",
+          "added_as"
+        ],
+        "additionalProperties": false
+      },
+      "LibraryCopy": {
+        "type": "object",
+        "properties": {
+          "recipe_id": {
+            "type": "string"
+          },
+          "foods_created": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "recipe_id",
+          "foods_created"
         ],
         "additionalProperties": false
       }
@@ -5531,6 +5875,373 @@
             }
           },
           "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/library": {
+      "get": {
+        "summary": "Browse the shared recipes",
+        "tags": [
+          "library"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recipes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SharedRecipe"
+                      }
+                    }
+                  },
+                  "required": [
+                    "recipes"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Share one of your recipes (or update the shared copy)",
+        "tags": [
+          "library"
+        ],
+        "description": "Every ingredient must be on the server: your synced foods or USDA foods. Recipes with INDB foods can’t be shared.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipe_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "recipe_id"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharedRecipe"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/library/{id}": {
+      "get": {
+        "summary": "A shared recipe with its ingredients",
+        "tags": [
+          "library"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharedRecipe"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove a recipe from the library (yours, or any as an admin)",
+        "tags": [
+          "library"
+        ],
+        "description": "Copies people already added stay theirs.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/library/{id}/copy": {
+      "post": {
+        "summary": "Add a shared recipe to your recipes",
+        "tags": [
+          "library"
+        ],
+        "description": "Creates your own copy (and foods for its ingredients; USDA ones are reused). It syncs to your phones. Later changes by its owner don’t change your copy.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryCopy"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
             "description": "Default Response",
             "content": {
               "application/json": {
