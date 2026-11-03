@@ -157,6 +157,28 @@ For the web app and agents (`/v1/*`; personal access tokens need `mcp:read` / `m
 - The **USDA reference foods** (SR Legacy, 7,793 foods per 100 g) ship in `apps/api/data` and load on first boot. They
   have the same ids as the app's copy, so a food logged on the web is the one the phone already has.
 
+### MCP (AI agents)
+
+`POST /mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server (Streamable HTTP, stateless), so an
+AI agent can read your diary and log for you. Make a token in the web app (Settings › Access tokens) and add the server
+to your agent, for example Claude Code:
+
+```bash
+claude mcp add --transport http macrotracker https://your-server/mcp --header "Authorization: Bearer mt_pat_…"
+```
+
+| Tools                                                                                                                 | Needs                                                 |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `get_status`, `get_day`, `daily_totals`, `list_diary`, `search_foods`, `recent_foods`, `list_recipes`, `list_weights` | `mcp:read`                                            |
+| `log_food`, `log_recipe`, `quick_add`, `create_food`, `log_weight`, `log_body_metric`, `update_entry`, `check_in`     | `mcp:write`, `MCP_WRITE_ENABLED`                      |
+| `delete_entry`, `delete_weight`                                                                                       | `mcp:destroy`, `MCP_DESTROY_ENABLED` (off by default) |
+
+- An agent only sees the tools its token and the server allow. Changes and deletes need `confirm: true`, so the agent
+  asks first.
+- Tools take a local date; without one, "today" is in `DEFAULT_TIMEZONE`.
+- Everything goes through the same data layer as the web app: macros are snapshotted, writes get a rev, and the phones
+  see them on their next sync.
+
 ## Develop
 
 ```bash

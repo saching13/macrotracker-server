@@ -49,6 +49,9 @@ which sits on the same network as the test `db` and `auth`.
   reduced transparency / more contrast, the orb for loading. It talks to the API only through the generated client
   (`apps/web/src/api/schema.d.ts`; `make gen-openapi`). Plain HTTP must keep working (tailnet): no secure-context-only
   browser APIs, no `upgrade-insecure-requests` without HTTPS.
+- **MCP tools (`routes/mcp.ts`) are thin wrappers over `DataService`**, never their own queries or writes. A tool is
+  registered only when the caller's scopes and the `MCP_*_ENABLED` flags allow it; anything that changes or deletes
+  takes `confirm: true`. Tool errors are `AppError`s returned as tool results, not protocol failures.
 - Free and self-hostable only: no paid services, no SMTP requirement.
 
 ## Testing

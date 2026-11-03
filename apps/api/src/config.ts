@@ -10,6 +10,12 @@ const list = z
       .filter(Boolean),
   );
 
+const flag = (fallback: boolean) =>
+  z
+    .enum(['true', 'false', '1', '0'])
+    .optional()
+    .transform((v) => (v === undefined ? fallback : v === 'true' || v === '1'));
+
 const configSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   HOST: z.string().default('0.0.0.0'),
@@ -37,6 +43,25 @@ const configSchema = z.object({
     .min(1024)
     .default(5 * 1024 * 1024),
   RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(300),
+
+  /** The MCP endpoint (/mcp) for AI agents, with personal access tokens. */
+  MCP_ENABLED: flag(true),
+  /** Lets agents log and edit (tokens also need mcp:write). */
+  MCP_WRITE_ENABLED: flag(true),
+  /** Lets agents delete (tokens also need mcp:destroy, and every call confirms). */
+  MCP_DESTROY_ENABLED: flag(false),
+  /** "Today" for agents that don't say which day they mean (IANA name). */
+  DEFAULT_TIMEZONE: z
+    .string()
+    .default('UTC')
+    .refine((tz) => {
+      try {
+        new Intl.DateTimeFormat('en-US', { timeZone: tz });
+        return true;
+      } catch {
+        return false;
+      }
+    }, 'not an IANA timezone'),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(20),
 });
 

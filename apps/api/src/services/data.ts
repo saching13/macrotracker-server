@@ -121,6 +121,46 @@ export class DataService {
     });
   }
 
+  /** Entries between two days (inclusive), oldest first. */
+  async entriesBetween(actor: SyncActor, from: string, to: string): Promise<Entry[]> {
+    return this.read(actor, async (tx) => {
+      const rows = await tx
+        .select()
+        .from(s.logEntries)
+        .where(
+          and(
+            live(s.logEntries, actor.userId),
+            gte(s.logEntries.localDate, from),
+            lte(s.logEntries.localDate, to),
+          ),
+        )
+        .orderBy(asc(s.logEntries.localDate), asc(s.logEntries.loggedTime), asc(s.logEntries.createdAt));
+      return this.entriesOut(tx, actor.userId, rows);
+    });
+  }
+
+  /** Totals per logged day between two days, with each day's targets. */
+  async dailyTotals(actor: SyncActor, from: string, to: string) {
+    const entries = await this.entriesBetween(actor, from, to);
+    const byDay = new Map<string, Entry[]>();
+    for (const e of entries) byDay.set(e.date, [...(byDay.get(e.date) ?? []), e]);
+    return this.read(actor, async (tx) => {
+      const { partialDays } = await this.metaOnly(tx, actor.userId);
+      const out = [];
+      for (const [date, list] of byDay) {
+        const t = await targetsOn(tx, actor.userId, date);
+        out.push({
+          date,
+          ...sumMacros(list),
+          entries: list.length,
+          partial: partialDays.has(date),
+          target_kcal: t?.kcal ?? null,
+        });
+      }
+      return out;
+    });
+  }
+
   private async metaOnly(tx: Tx, userId: string) {
     const [row] = await tx
       .select({ value: s.userMeta.value })
@@ -551,6 +591,27 @@ export class DataService {
     );
     if (found.length === 0) throw missing('No such weigh-in', 'weight_not_found');
     await this.sync.write(actor, [{ table: 'weight_entries', id, op: 'delete' }]);
+  }
+
+  async addBodyMetric(actor: SyncActor, date: string, metric: string, value: number) {
+    const id = randomUUID();
+    await this.sync.write(actor, [
+      {
+        table: 'body_metric_entries',
+        id,
+        op: 'insert',
+        row: {
+          id,
+          local_date: date,
+          metric,
+          value,
+          source: 'manual',
+          health_uuid: null,
+          created_at: this.now(),
+        },
+      },
+    ]);
+    return { id, date, metric, value };
   }
 
   // ── Profile ──

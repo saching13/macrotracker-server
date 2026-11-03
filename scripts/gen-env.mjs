@@ -53,6 +53,12 @@ PUBLIC_URL=http://localhost:8080
 # Comma-separated browser origins allowed to call the API with credentials.
 WEB_ORIGINS=http://localhost:5173
 LOG_LEVEL=info
+# AI agents (MCP at /mcp): on; logging and editing allowed; deleting off.
+MCP_ENABLED=true
+MCP_WRITE_ENABLED=true
+MCP_DESTROY_ENABLED=false
+# "Today" for agents that don't name a day.
+DEFAULT_TIMEZONE=UTC
 `;
 writeFileSync(out, env, { mode: 0o600 });
 console.log(`Wrote ${out}`);

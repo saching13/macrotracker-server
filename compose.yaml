@@ -95,6 +95,10 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
       WEB_ORIGINS: ${WEB_ORIGINS:-}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      MCP_ENABLED: ${MCP_ENABLED:-true}
+      MCP_WRITE_ENABLED: ${MCP_WRITE_ENABLED:-true}
+      MCP_DESTROY_ENABLED: ${MCP_DESTROY_ENABLED:-false}
+      DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE:-UTC}
     ports:
       - '${API_BIND:-127.0.0.1}:${API_PORT:-8080}:8080'
 
