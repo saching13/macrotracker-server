@@ -10,7 +10,7 @@ x-db-env: &db-env
 
 services:
   db:
-    image: supabase/postgres:17.6.1.136
+    image: supabase/postgres:17.11.0.013
     restart: unless-stopped
     environment:
       <<: *db-env
@@ -102,10 +102,9 @@ services:
   # network as db and auth. Not started by `make up`.
   node:
     profiles: ['tools']
-    image: node:22-alpine
+    image: node:26-alpine
     working_dir: /work
     environment:
-      COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
       PNPM_HOME: /pnpm
       npm_config_store_dir: /pnpm/store
       TEST_DATABASE_URL: postgres://mt_api:${MT_API_PASSWORD}@db:5432/postgres
@@ -116,7 +115,17 @@ services:
     volumes:
       - .:/work
       - pnpm-store:/pnpm
-    entrypoint: ['sh', '-c', 'corepack enable >/dev/null 2>&1; exec "$@"', '--']
+    # Node 25+ no longer bundles corepack: install the pnpm that packageManager
+    # pins into the cached volume, once per version.
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        pm=$$(node -p 'require("./package.json").packageManager');
+        [ "pnpm@$$(/pnpm/bin/pnpm -v 2>/dev/null)" = "$$pm" ] ||
+        npm install -g --prefix /pnpm --silent "$$pm" >/dev/null;
+        PATH=/pnpm/bin:$$PATH exec "$$@"
+      - --
 
 volumes:
   db-data:

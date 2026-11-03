@@ -15,7 +15,7 @@ help:
 	@grep -E '^#' Makefile | sed 's/^# \{0,1\}//'
 
 env:
-	docker run --rm -v "$(CURDIR)":/w -w /w node:22-alpine node scripts/gen-env.mjs .env
+	docker run --rm -v "$(CURDIR)":/w -w /w node:26-alpine node scripts/gen-env.mjs .env
 
 up:
 	$(DC) up -d --build --wait

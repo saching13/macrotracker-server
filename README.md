@@ -137,7 +137,7 @@ The app keeps its own database and syncs row by row (`/v1/sync/*`, signed-in dev
 make test          # unit tests + integration tests against throwaway Postgres + GoTrue containers
 make lint          # eslint + prettier
 make typecheck
-make shell         # a Node 22 container with the repo mounted, on the test network
+make shell         # a Node 26 container with the repo mounted, on the test network
 make gen-migration NAME=add_thing             # after editing apps/api/src/db/schema.ts
 make gen-migration NAME=add_function CUSTOM=1 # hand-written SQL (functions, triggers, grants)
 make gen-openapi   # after changing routes
