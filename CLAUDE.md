@@ -32,6 +32,10 @@ which sits on the same network as the test `db` and `auth`.
   `.optional()` there so older apps don't wipe it. Bump `SYNC_SCHEMA` when the app's schema version changes. Every
   write to a synced table (sync, and later web/MCP) goes through `services/sync.ts` so it takes the account's next
   `rev` under the counter lock; never write those tables directly.
+- **`packages/shared/src/engine` mirrors the app's Dart engine** operation for operation; never "improve" it here.
+  Engine changes start in the app (`make golden-engine` there), then `scripts/sync-engine-fixtures.sh`, then the port.
+  The engine stays pure: no I/O, no database, no clock (pass `today` in).
+- **All unit conversions go through `packages/shared/src/units.ts`** (port of the app's `UnitConverter`).
 - **Reference foods (USDA, INDB) never reach the server.** INDB may not be redistributed.
 - Free and self-hostable only: no paid services, no SMTP requirement.
 

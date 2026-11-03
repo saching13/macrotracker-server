@@ -3,3 +3,4 @@ coverage
 pnpm-lock.yaml
 apps/api/drizzle
 openapi.json
+fixtures/engine

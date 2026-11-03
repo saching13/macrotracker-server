@@ -16,10 +16,14 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test:unit": "echo 'no unit tests yet'",
+    "test:unit": "vitest run",
     "test:int": "echo 'no integration tests'"
   },
   "dependencies": {
     "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "vitest": "^5.0.0"
   }
 }

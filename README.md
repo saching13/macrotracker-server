@@ -37,13 +37,14 @@ repo.
   runs in a transaction that sets `app.user_id`. A query that forgot its `WHERE user_id = …` still can't see someone
   else's rows. Migrations run as a separate owner role.
 
-| Path                  | What                                                                |
-| --------------------- | ------------------------------------------------------------------- |
-| `apps/api`            | Fastify API, migrations (`drizzle/`), admin CLI, invite/reset pages |
-| `packages/shared`     | Zod schemas shared by the API and (later) the web app               |
-| `docker/db/roles.sql` | First-boot database roles and grants                                |
-| `compose.yaml`        | `db`, `auth`, `api` (+ a `node` toolbox for dev and tests)          |
-| `openapi.json`        | Generated API description; CI fails if it is stale                  |
+| Path                  | What                                                                 |
+| --------------------- | -------------------------------------------------------------------- |
+| `apps/api`            | Fastify API, migrations (`drizzle/`), admin CLI, invite/reset pages  |
+| `packages/shared`     | Zod schemas, units and the TDEE engine port, shared with the web app |
+| `fixtures/engine`     | Golden vectors from the app's Dart engine (see below)                |
+| `docker/db/roles.sql` | First-boot database roles and grants                                 |
+| `compose.yaml`        | `db`, `auth`, `api` (+ a `node` toolbox for dev and tests)           |
+| `openapi.json`        | Generated API description; CI fails if it is stale                   |
 
 ## Run it
 
@@ -142,6 +143,18 @@ make gen-migration NAME=add_thing             # after editing apps/api/src/db/sc
 make gen-migration NAME=add_function CUSTOM=1 # hand-written SQL (functions, triggers, grants)
 make gen-openapi   # after changing routes
 make test-reset    # drop the test database (needed after editing docker/db/roles.sql)
+```
+
+### Engine
+
+`packages/shared/src/engine` is a TypeScript port of the app's adaptive TDEE engine (`lib/core/engine/`), so the
+server can compute trend weight, expenditure and targets for the web app and MCP. The app writes golden vectors (12
+simulated histories × 24 programs, plus the check-in schedule and partial-day rules); `packages/shared/test` must
+reproduce them bit for bit. After an engine change in the app:
+
+```bash
+make golden-engine                                   # in the app repo
+scripts/sync-engine-fixtures.sh ../MacroTracker      # here; then update the port until make test-unit passes
 ```
 
 `.env.test` holds **test-only** secrets and is committed on purpose so CI and local tests share one setup. Never use
