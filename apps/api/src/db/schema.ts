@@ -499,3 +499,29 @@ export const userMeta = app
     (t) => syncExtras('user_meta', t, t.key),
   )
   .enableRLS();
+
+/**
+ * Foods every account can search and log: USDA SR Legacy (public domain),
+ * seeded on boot from apps/api/data (see db/seed.ts). Ids match the app's
+ * bundled copy (uuid v5 of `usda:fdc:<id>`), so an entry logged on the web
+ * points at the food the phone already has. Read-only to the API; INDB is
+ * never here (it may not be redistributed).
+ */
+export const referenceFoods = app
+  .table(
+    'reference_foods',
+    {
+      id: text('id').primaryKey(),
+      name: text('name').notNull(),
+      servingQty: real('serving_qty').notNull(),
+      servingUnit: text('serving_unit').notNull(),
+      kcalPerServing: real('kcal_per_serving').notNull(),
+      proteinG: real('protein_g').notNull(),
+      carbG: real('carb_g').notNull(),
+      fatG: real('fat_g').notNull(),
+      fiberG: real('fiber_g'),
+      source: text('source').notNull(),
+    },
+    () => [pgPolicy('reference_foods_read', { for: 'select', using: sql`true` })],
+  )
+  .enableRLS();

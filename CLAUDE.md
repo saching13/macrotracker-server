@@ -31,7 +31,11 @@ which sits on the same network as the test `db` and `auth`.
   foreign keys between them. Row shapes live in `packages/shared/src/sync/rows.ts`; a column added later must be
   `.optional()` there so older apps don't wipe it. Bump `SYNC_SCHEMA` when the app's schema version changes. Every
   write to a synced table (sync, and later web/MCP) goes through `services/sync.ts` so it takes the account's next
-  `rev` under the counter lock; never write those tables directly.
+  `rev` under the counter lock; never write those tables directly. Server-side writes (web, MCP) use
+  `SyncService.write`, from `services/data.ts`; reads there filter tombstones with `live()`.
+- **Diary entries snapshot their macros** when logged or re-measured (`foodMacros` / `recipeMacros` in
+  `packages/shared/src/diary.ts`), never recomputed later. The server doesn't know the user's timezone: data calls take
+  the local date.
 - **`packages/shared/src/engine` mirrors the app's Dart engine** operation for operation; never "improve" it here.
   Engine changes start in the app (`make golden-engine` there), then `scripts/sync-engine-fixtures.sh`, then the port.
   The engine stays pure: no I/O, no database, no clock (pass `today` in).

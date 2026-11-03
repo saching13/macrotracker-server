@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import {
   SYNC_SCHEMA,
   SYNCED_META_KEYS,
@@ -153,6 +154,21 @@ function parseRow(sp: Spec, raw: unknown, expectedKey?: string): { key: string; 
 
 /** Validates a row as push and bootstrap do; throws a Rejection. */
 export const validateRow = (table: SyncTable, raw: unknown) => parseRow(SPECS[table], raw);
+
+/** A synced table's Drizzle row in wire form (the app's column names). */
+export function wireRow(table: SyncTable, row: Record<string, unknown>): Record<string, unknown> {
+  const wire: Record<string, unknown> = {};
+  for (const [name, prop] of SPECS[table].props) wire[name] = row[prop];
+  return wire;
+}
+
+/** A write made on the server (web app, agents), in wire form. */
+export interface ServerWrite {
+  table: SyncTable;
+  id: string;
+  op: 'insert' | 'update' | 'delete';
+  row?: Record<string, unknown>;
+}
 
 function toState(sp: Spec, row: DbRow): SyncRowState {
   const deleted = row.deletedAt != null;
@@ -387,6 +403,34 @@ export class SyncService {
    * repeatable-read snapshot covers all tables, so a page never mixes before
    * and after a concurrent push.
    */
+  /**
+   * Writes made on the server (web app, agents): stamped with the server's
+   * clock and applied exactly like a phone's push, so every synced write
+   * takes the account's next rev and reaches the phones on their next pull.
+   * Throws 422 if the server would refuse a row.
+   */
+  async write(actor: SyncActor, writes: ServerWrite[]): Promise<number> {
+    if (writes.length === 0) return 0;
+    const now = this.clock().toISOString();
+    const res = await this.push(actor, {
+      schema_version: SYNC_SCHEMA.max,
+      client_now: now,
+      changes: writes.map((w) => ({
+        change_id: randomUUID(),
+        table: w.table,
+        id: w.id,
+        op: w.op,
+        changed_at: now,
+        ...(w.row ? { row: w.row } : {}),
+      })),
+    });
+    const refused = res.results.find((r) => r.result === 'rejected');
+    if (refused) {
+      throw new AppError(422, refused.error?.code ?? 'invalid_row', refused.error?.message ?? 'Invalid data');
+    }
+    return res.rev;
+  }
+
   async pull(actor: SyncActor, since: number, limit: number): Promise<SyncPullResponse> {
     const now = this.clock();
     return withContext(

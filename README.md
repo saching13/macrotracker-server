@@ -132,6 +132,30 @@ The app keeps its own database and syncs row by row (`/v1/sync/*`, signed-in dev
 - What syncs: profile, weights, body measurements, your own foods (not the built-in USDA/INDB ones), servings, recipes,
   diary, goals, programs, targets and a few per-person settings. Progress photos and device settings stay on the phone.
 
+### Data
+
+For the web app and agents (`/v1/*`; personal access tokens need `mcp:read` / `mcp:write` / `mcp:destroy`):
+
+| Endpoint                                               | What                                                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `GET /v1/status?today=`                                | Trend weight, expenditure, today's totals and targets, the week, check-in |
+| `GET /v1/day?date=`                                    | A day's entries, totals and targets                                       |
+| `POST /v1/entries`, `PATCH`/`DELETE /v1/entries/{id}`  | Log a food (by id and amount), a recipe, or quick-add macros              |
+| `GET /v1/foods/search?q=`, `/v1/foods/recent`, `/{id}` | Your foods, then the USDA reference foods                                 |
+| `POST /v1/foods`                                       | Create a food (with servings)                                             |
+| `GET`/`POST /v1/weights`, `DELETE /v1/weights/{id}`    | Weigh-ins (kg)                                                            |
+| `GET`/`PATCH /v1/profile`                              | Profile; units                                                            |
+| `GET`/`POST /v1/check-in?today=`                       | Preview or accept the weekly check-in                                     |
+| `GET /v1/recipes`                                      | Your recipes                                                              |
+
+- The server doesn't know your timezone, so calls pass the local date (`today`, `date`).
+- Writes go through the same path as a phone's push: they get a `rev` and reach the phones on their next sync.
+- An entry's macros are **snapshotted when it is logged** (or its amount changes), from the food as it is then. Later
+  edits to the food never change past days.
+- `status` and check-ins run the [engine](#engine) over the synced history, so they match the app.
+- The **USDA reference foods** (SR Legacy, 7,793 foods per 100 g) ship in `apps/api/data` and load on first boot. They
+  have the same ids as the app's copy, so a food logged on the web is the one the phone already has.
+
 ## Develop
 
 ```bash
@@ -172,4 +196,5 @@ docker compose exec db pg_dump -U postgres -Fc postgres > macrotracker-$(date +%
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). `apps/api/data/usda_sr_legacy.json.gz` is from USDA FoodData Central (SR Legacy, April 2018), which is
+in the public domain (CC0 1.0).

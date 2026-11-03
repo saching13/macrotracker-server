@@ -734,6 +734,611 @@
           "server_now"
         ]
       },
+      "EntryInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "time": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "meal": {
+            "type": "string"
+          },
+          "food_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recipe_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "serving_label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "serving_amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "kcal": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "time",
+          "meal",
+          "food_id",
+          "recipe_id",
+          "name",
+          "quantity",
+          "serving_label",
+          "serving_amount",
+          "kcal",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "created_at"
+        ]
+      },
+      "DayTargetsInput": {
+        "type": "object",
+        "properties": {
+          "kcal": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "effective_date": {
+            "type": "string"
+          },
+          "weekday": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kcal",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "effective_date",
+          "weekday"
+        ]
+      },
+      "DayInput": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntryInput"
+            }
+          },
+          "totals": {
+            "type": "object",
+            "properties": {
+              "kcal": {
+                "type": "number"
+              },
+              "protein_g": {
+                "type": "number"
+              },
+              "carb_g": {
+                "type": "number"
+              },
+              "fat_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kcal",
+              "protein_g",
+              "carb_g",
+              "fat_g"
+            ]
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DayTargetsInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "partial": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "date",
+          "entries",
+          "totals",
+          "targets",
+          "partial"
+        ]
+      },
+      "FoodInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "barcode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "serving_qty": {
+            "type": "number"
+          },
+          "serving_unit": {
+            "type": "string"
+          },
+          "kcal_per_serving": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "fiber_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "is_favorite": {
+            "type": "boolean"
+          },
+          "reference": {
+            "type": "boolean"
+          },
+          "servings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "base_amount": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "base_amount"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "brand",
+          "barcode",
+          "serving_qty",
+          "serving_unit",
+          "kcal_per_serving",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "fiber_g",
+          "source",
+          "is_favorite",
+          "reference",
+          "servings"
+        ]
+      },
+      "RecipeInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "servings": {
+            "type": "number"
+          },
+          "total_weight_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "total_kcal": {
+            "type": "number"
+          },
+          "total_protein_g": {
+            "type": "number"
+          },
+          "total_carb_g": {
+            "type": "number"
+          },
+          "total_fat_g": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "servings",
+          "total_weight_g",
+          "total_kcal",
+          "total_protein_g",
+          "total_carb_g",
+          "total_fat_g"
+        ]
+      },
+      "WeightInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "weight_kg": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "weight_kg",
+          "source"
+        ]
+      },
+      "ProfileInput": {
+        "type": "object",
+        "properties": {
+          "sex": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "height_cm": {
+            "type": "number"
+          },
+          "activity_seed": {
+            "type": "string"
+          },
+          "unit_mass": {
+            "type": "string",
+            "enum": [
+              "kg",
+              "lb"
+            ]
+          },
+          "unit_energy": {
+            "type": "string",
+            "enum": [
+              "kcal",
+              "kj"
+            ]
+          }
+        },
+        "required": [
+          "sex",
+          "birth_date",
+          "height_cm",
+          "activity_seed",
+          "unit_mass",
+          "unit_energy"
+        ]
+      },
+      "CheckInInput": {
+        "type": "object",
+        "properties": {
+          "last_check_in": {
+            "type": "string"
+          },
+          "next_check_in": {
+            "type": "string"
+          },
+          "is_due": {
+            "type": "boolean"
+          },
+          "days_until": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "can_check_in_early": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "last_check_in",
+          "next_check_in",
+          "is_due",
+          "days_until",
+          "can_check_in_early"
+        ]
+      },
+      "StatusInput": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProfileInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "estimate": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "trend_weight_kg": {
+                    "type": "number"
+                  },
+                  "expenditure_kcal": {
+                    "type": "number"
+                  },
+                  "expenditure_sd_kcal": {
+                    "type": "number"
+                  },
+                  "data_driven": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "trend_weight_kg",
+                  "expenditure_kcal",
+                  "expenditure_sd_kcal",
+                  "data_driven"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "today_totals": {
+            "type": "object",
+            "properties": {
+              "kcal": {
+                "type": "number"
+              },
+              "protein_g": {
+                "type": "number"
+              },
+              "carb_g": {
+                "type": "number"
+              },
+              "fat_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kcal",
+              "protein_g",
+              "carb_g",
+              "fat_g"
+            ]
+          },
+          "today_targets": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DayTargetsInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "week": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DayTargetsInput"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "check_in": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckInInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "trend_kg": {
+                  "type": "number"
+                },
+                "scale_kg": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "date",
+                "trend_kg",
+                "scale_kg"
+              ]
+            }
+          }
+        },
+        "required": [
+          "today",
+          "profile",
+          "estimate",
+          "today_totals",
+          "today_targets",
+          "week",
+          "check_in",
+          "trend"
+        ]
+      },
+      "CheckInPreviewInput": {
+        "type": "object",
+        "properties": {
+          "week": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayTargetsInput"
+            }
+          },
+          "expenditure_kcal": {
+            "type": "number"
+          },
+          "previous_expenditure_kcal": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "data_driven": {
+            "type": "boolean"
+          },
+          "trend_kg": {
+            "type": "number"
+          },
+          "trend_change_kg": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "average_intake_kcal": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "logged_days": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "weigh_ins": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "week",
+          "expenditure_kcal",
+          "previous_expenditure_kcal",
+          "data_driven",
+          "trend_kg",
+          "trend_change_kg",
+          "average_intake_kcal",
+          "logged_days",
+          "weigh_ins"
+        ]
+      },
       "Error": {
         "type": "object",
         "properties": {
@@ -1467,6 +2072,626 @@
           "empty",
           "schema",
           "server_now"
+        ],
+        "additionalProperties": false
+      },
+      "Entry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "time": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "meal": {
+            "type": "string"
+          },
+          "food_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recipe_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "serving_label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "serving_amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "kcal": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "time",
+          "meal",
+          "food_id",
+          "recipe_id",
+          "name",
+          "quantity",
+          "serving_label",
+          "serving_amount",
+          "kcal",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "DayTargets": {
+        "type": "object",
+        "properties": {
+          "kcal": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "effective_date": {
+            "type": "string"
+          },
+          "weekday": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kcal",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "effective_date",
+          "weekday"
+        ],
+        "additionalProperties": false
+      },
+      "Day": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Entry"
+            }
+          },
+          "totals": {
+            "type": "object",
+            "properties": {
+              "kcal": {
+                "type": "number"
+              },
+              "protein_g": {
+                "type": "number"
+              },
+              "carb_g": {
+                "type": "number"
+              },
+              "fat_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kcal",
+              "protein_g",
+              "carb_g",
+              "fat_g"
+            ],
+            "additionalProperties": false
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DayTargets"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "partial": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "date",
+          "entries",
+          "totals",
+          "targets",
+          "partial"
+        ],
+        "additionalProperties": false
+      },
+      "Food": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "barcode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "serving_qty": {
+            "type": "number"
+          },
+          "serving_unit": {
+            "type": "string"
+          },
+          "kcal_per_serving": {
+            "type": "number"
+          },
+          "protein_g": {
+            "type": "number"
+          },
+          "carb_g": {
+            "type": "number"
+          },
+          "fat_g": {
+            "type": "number"
+          },
+          "fiber_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "is_favorite": {
+            "type": "boolean"
+          },
+          "reference": {
+            "type": "boolean"
+          },
+          "servings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "base_amount": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "base_amount"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "brand",
+          "barcode",
+          "serving_qty",
+          "serving_unit",
+          "kcal_per_serving",
+          "protein_g",
+          "carb_g",
+          "fat_g",
+          "fiber_g",
+          "source",
+          "is_favorite",
+          "reference",
+          "servings"
+        ],
+        "additionalProperties": false
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "servings": {
+            "type": "number"
+          },
+          "total_weight_g": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "total_kcal": {
+            "type": "number"
+          },
+          "total_protein_g": {
+            "type": "number"
+          },
+          "total_carb_g": {
+            "type": "number"
+          },
+          "total_fat_g": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "servings",
+          "total_weight_g",
+          "total_kcal",
+          "total_protein_g",
+          "total_carb_g",
+          "total_fat_g"
+        ],
+        "additionalProperties": false
+      },
+      "Weight": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "weight_kg": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "weight_kg",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "sex": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "height_cm": {
+            "type": "number"
+          },
+          "activity_seed": {
+            "type": "string"
+          },
+          "unit_mass": {
+            "type": "string",
+            "enum": [
+              "kg",
+              "lb"
+            ]
+          },
+          "unit_energy": {
+            "type": "string",
+            "enum": [
+              "kcal",
+              "kj"
+            ]
+          }
+        },
+        "required": [
+          "sex",
+          "birth_date",
+          "height_cm",
+          "activity_seed",
+          "unit_mass",
+          "unit_energy"
+        ],
+        "additionalProperties": false
+      },
+      "CheckIn": {
+        "type": "object",
+        "properties": {
+          "last_check_in": {
+            "type": "string"
+          },
+          "next_check_in": {
+            "type": "string"
+          },
+          "is_due": {
+            "type": "boolean"
+          },
+          "days_until": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "can_check_in_early": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "last_check_in",
+          "next_check_in",
+          "is_due",
+          "days_until",
+          "can_check_in_early"
+        ],
+        "additionalProperties": false
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Profile"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "estimate": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "trend_weight_kg": {
+                    "type": "number"
+                  },
+                  "expenditure_kcal": {
+                    "type": "number"
+                  },
+                  "expenditure_sd_kcal": {
+                    "type": "number"
+                  },
+                  "data_driven": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "trend_weight_kg",
+                  "expenditure_kcal",
+                  "expenditure_sd_kcal",
+                  "data_driven"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "today_totals": {
+            "type": "object",
+            "properties": {
+              "kcal": {
+                "type": "number"
+              },
+              "protein_g": {
+                "type": "number"
+              },
+              "carb_g": {
+                "type": "number"
+              },
+              "fat_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kcal",
+              "protein_g",
+              "carb_g",
+              "fat_g"
+            ],
+            "additionalProperties": false
+          },
+          "today_targets": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DayTargets"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "week": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DayTargets"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "check_in": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "trend_kg": {
+                  "type": "number"
+                },
+                "scale_kg": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "date",
+                "trend_kg",
+                "scale_kg"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "today",
+          "profile",
+          "estimate",
+          "today_totals",
+          "today_targets",
+          "week",
+          "check_in",
+          "trend"
+        ],
+        "additionalProperties": false
+      },
+      "CheckInPreview": {
+        "type": "object",
+        "properties": {
+          "week": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayTargets"
+            }
+          },
+          "expenditure_kcal": {
+            "type": "number"
+          },
+          "previous_expenditure_kcal": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "data_driven": {
+            "type": "boolean"
+          },
+          "trend_kg": {
+            "type": "number"
+          },
+          "trend_change_kg": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "average_intake_kcal": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "logged_days": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "weigh_ins": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "week",
+          "expenditure_kcal",
+          "previous_expenditure_kcal",
+          "data_driven",
+          "trend_kg",
+          "trend_change_kg",
+          "average_intake_kcal",
+          "logged_days",
+          "weigh_ins"
         ],
         "additionalProperties": false
       }
@@ -2919,6 +4144,1393 @@
             }
           },
           "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/status": {
+      "get": {
+        "summary": "Dashboard: estimate, today, targets, check-in",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "today",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/day": {
+      "get": {
+        "summary": "A day's diary, totals and targets",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "date",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Day"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/entries": {
+      "post": {
+        "summary": "Log a food, a recipe or quick-add macros",
+        "tags": [
+          "data"
+        ],
+        "description": "Macros are snapshotted from the food or recipe now; later edits to the food never change this entry.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "time": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "food_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "recipe_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 100000
+                  },
+                  "serving_label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "serving_amount": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 100000
+                  },
+                  "kcal": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "protein_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "carb_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "fat_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  }
+                },
+                "required": [
+                  "date"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entry"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/entries/{id}": {
+      "patch": {
+        "summary": "Change an entry (amount, time, day, or quick-add macros)",
+        "tags": [
+          "data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "time": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 100000
+                  },
+                  "serving_amount": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 100000
+                  },
+                  "kcal": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "protein_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "carb_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "fat_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entry"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an entry",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/foods/search": {
+      "get": {
+        "summary": "Search your foods and the USDA reference foods",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "in": "query",
+            "name": "q",
+            "required": true
+          },
+          {
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "foods": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Food"
+                      }
+                    }
+                  },
+                  "required": [
+                    "foods"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/foods/recent": {
+      "get": {
+        "summary": "Foods from your latest entries",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "foods": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Food"
+                      }
+                    }
+                  },
+                  "required": [
+                    "foods"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/foods/{id}": {
+      "get": {
+        "summary": "A food with its servings",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Food"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/foods": {
+      "post": {
+        "summary": "Create a food",
+        "tags": [
+          "data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "brand": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "barcode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 64
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "serving_qty": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 100000
+                  },
+                  "serving_unit": {
+                    "type": "string",
+                    "enum": [
+                      "g",
+                      "ml"
+                    ]
+                  },
+                  "kcal_per_serving": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "protein_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "carb_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "fat_g": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "fiber_g": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "servings": {
+                    "maxItems": 20,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "base_amount": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "base_amount"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "serving_qty",
+                  "serving_unit",
+                  "kcal_per_serving",
+                  "protein_g",
+                  "carb_g",
+                  "fat_g"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Food"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recipes": {
+      "get": {
+        "summary": "Your recipes",
+        "tags": [
+          "data"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recipes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recipe"
+                      }
+                    }
+                  },
+                  "required": [
+                    "recipes"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/weights": {
+      "get": {
+        "summary": "Weigh-ins between two days",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "from",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "to",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "weights": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Weight"
+                      }
+                    }
+                  },
+                  "required": [
+                    "weights"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Log a weigh-in (kg)",
+        "tags": [
+          "data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "weight_kg": {
+                    "type": "number",
+                    "minimum": 20,
+                    "maximum": 400
+                  }
+                },
+                "required": [
+                  "date",
+                  "weight_kg"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Weight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/weights/{id}": {
+      "delete": {
+        "summary": "Delete a weigh-in",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile": {
+      "get": {
+        "summary": "Your profile (null until set up in the app)",
+        "tags": [
+          "data"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/Profile"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Change display units",
+        "tags": [
+          "data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "unit_mass": {
+                    "type": "string",
+                    "enum": [
+                      "kg",
+                      "lb"
+                    ]
+                  },
+                  "unit_energy": {
+                    "type": "string",
+                    "enum": [
+                      "kcal",
+                      "kj"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/check-in": {
+      "get": {
+        "summary": "Preview this week's check-in",
+        "tags": [
+          "data"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "today",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInPreview"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Accept this week's check-in: new targets from today",
+        "tags": [
+          "data"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "today": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  }
+                },
+                "required": [
+                  "today"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
             "description": "Default Response",
             "content": {
               "application/json": {

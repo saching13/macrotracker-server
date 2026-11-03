@@ -6,7 +6,8 @@
   "files": [
     "dist",
     "drizzle",
-    "public"
+    "public",
+    "data"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

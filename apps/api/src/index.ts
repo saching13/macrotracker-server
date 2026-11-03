@@ -1,10 +1,14 @@
 import { buildApp } from './app.js';
 import { ConfigError, loadConfig } from './config.js';
 import { runMigrations } from './db/migrate.js';
+import { seedReferenceFoods } from './db/seed.js';
 
 async function main() {
   const config = loadConfig();
-  if (config.MIGRATION_DATABASE_URL) await runMigrations(config.MIGRATION_DATABASE_URL);
+  if (config.MIGRATION_DATABASE_URL) {
+    await runMigrations(config.MIGRATION_DATABASE_URL);
+    await seedReferenceFoods(config.MIGRATION_DATABASE_URL);
+  }
 
   const app = await buildApp({ config });
   let closing = false;
