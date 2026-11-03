@@ -3,6 +3,8 @@
 #   make up      build and start db + auth + api
 #   make admin EMAIL=you@example.com   create the first admin
 #   make test    unit + integration tests against throwaway containers
+#   make backup-now   a database dump in ./backups now (daily ones happen anyway)
+#   make restore-drill   back up, wipe and restore a throwaway stack
 #   make e2e     web end-to-end tests (Playwright) against a throwaway stack
 #   make web-dev the web app with hot reload on :5173 (needs `make up`)
 
@@ -12,7 +14,7 @@ TOOLS := $(TEST) run --rm node
 
 .PHONY: help env up down logs ps admin shell install lint typecheck format \
         test test-unit test-int test-reset gen-migration gen-openapi check-openapi build \
-        gen-api e2e web-dev
+        gen-api e2e web-dev backup-now restore-drill
 
 help:
 	@grep -E '^#' Makefile | sed 's/^# \{0,1\}//'
@@ -21,6 +23,7 @@ env:
 	docker run --rm -v "$(CURDIR)":/w -w /w node:26-alpine node scripts/gen-env.mjs .env
 
 up:
+	mkdir -p backups
 	$(DC) up -d --build --wait
 
 down:
@@ -92,3 +95,9 @@ e2e: install
 web-dev: install
 	$(TEST) run --rm -p 127.0.0.1:5173:5173 -e API_URL=http://host.docker.internal:8080 \
 	  node sh -c 'cd apps/web && pnpm dev'
+
+backup-now:
+	$(DC) exec -T backup /backup.sh now
+
+restore-drill:
+	scripts/restore-drill.sh

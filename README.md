@@ -236,11 +236,18 @@ Dependencies are installed with a 7-day minimum release age (`pnpm-workspace.yam
 
 ## Backups
 
-The data lives in the `db-data` volume. Until scheduled backups land, take one with:
+The `backup` service dumps the database every day at `BACKUP_HOUR` (UTC, default 3) into `BACKUP_DIR` (default
+`./backups`), keeping `BACKUP_KEEP_DAYS` (default 14) days. A dump holds every account and all their data (the `app`
+and `auth` schemas); copy them somewhere else now and then.
 
 ```bash
-docker compose exec db pg_dump -U postgres -Fc postgres > macrotracker-$(date +%F).dump
+make backup-now                                        # one more, now
+scripts/restore.sh backups/macrotracker-<stamp>.dump   # replaces everything with that dump
+make restore-drill                                     # practice on a throwaway stack (CI runs it too)
 ```
+
+Set `BACKUP_UID`/`BACKUP_GID` to your user's ids so the files are yours (they're written with mode 600), and create
+`BACKUP_DIR` first.
 
 ## License
 

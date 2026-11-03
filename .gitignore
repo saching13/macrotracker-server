@@ -10,3 +10,4 @@ coverage/
 apps/api/web/
 playwright-report/
 test-results/
+backups/

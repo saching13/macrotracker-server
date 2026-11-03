@@ -72,6 +72,13 @@ jobs:
             apps/web/test-results
           retention-days: 7
 
+  restore-drill:
+    name: Backup and restore drill
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: scripts/restore-drill.sh
+
   image:
     name: Build image
     runs-on: ubuntu-latest
