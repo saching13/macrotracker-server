@@ -28,9 +28,12 @@ test('consent page sends the connector back with a code', async ({ page, request
   await expect(page.getByText('Log food and weight')).toBeVisible();
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(password);
+  // Stand in for the connector's callback.
+  await page.route(`${redirect}**`, (r) => r.fulfill({ status: 200, body: 'connected' }));
   const back = page.waitForRequest((r) => r.url().startsWith(redirect));
   await page.getByRole('button', { name: 'Sign in and allow' }).click();
   const url = new URL((await back).url());
+  await expect(page.getByText('connected')).toBeVisible();
   expect(url.searchParams.get('state')).toBe('abc');
 
   const tok = await request.post('/oauth/token', {

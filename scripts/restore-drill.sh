@@ -5,7 +5,10 @@
 # and the entry is back. Exits non-zero if anything is missing.
 set -eu
 cd "$(dirname "$0")/.."
-export API_PORT=18083 PUBLIC_URL=http://localhost:18083 BACKUP_DIR
+export API_PORT=18083 PUBLIC_URL=http://localhost:18083 BACKUP_DIR BACKUP_UID BACKUP_GID
+# Dumps are mode 600: write them as us so we can read them back.
+BACKUP_UID=$(id -u)
+BACKUP_GID=$(id -g)
 BACKUP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mt-drill.XXXXXX")
 chmod 777 "$BACKUP_DIR"
 dc() { docker compose -p mt-drill --env-file .env.test "$@"; }
