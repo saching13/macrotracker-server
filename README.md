@@ -37,14 +37,15 @@ repo.
   runs in a transaction that sets `app.user_id`. A query that forgot its `WHERE user_id = …` still can't see someone
   else's rows. Migrations run as a separate owner role.
 
-| Path                  | What                                                                 |
-| --------------------- | -------------------------------------------------------------------- |
-| `apps/api`            | Fastify API, migrations (`drizzle/`), admin CLI, invite/reset pages  |
-| `packages/shared`     | Zod schemas, units and the TDEE engine port, shared with the web app |
-| `fixtures/engine`     | Golden vectors from the app's Dart engine (see below)                |
-| `docker/db/roles.sql` | First-boot database roles and grants                                 |
-| `compose.yaml`        | `db`, `auth`, `api` (+ a `node` toolbox for dev and tests)           |
-| `openapi.json`        | Generated API description; CI fails if it is stale                   |
+| Path                  | What                                                                  |
+| --------------------- | --------------------------------------------------------------------- |
+| `apps/api`            | Fastify API, migrations (`drizzle/`), admin CLI, invite/reset pages   |
+| `apps/web`            | React web app (Vite, TanStack Router/Query); the API serves its build |
+| `packages/shared`     | Zod schemas, units and the TDEE engine port, shared with the web app  |
+| `fixtures/engine`     | Golden vectors from the app's Dart engine (see below)                 |
+| `docker/db/roles.sql` | First-boot database roles and grants                                  |
+| `compose.yaml`        | `db`, `auth`, `api` (+ a `node` toolbox for dev and tests)            |
+| `openapi.json`        | Generated API description; CI fails if it is stale                    |
 
 ## Run it
 
@@ -165,7 +166,9 @@ make typecheck
 make shell         # a Node 26 container with the repo mounted, on the test network
 make gen-migration NAME=add_thing             # after editing apps/api/src/db/schema.ts
 make gen-migration NAME=add_function CUSTOM=1 # hand-written SQL (functions, triggers, grants)
-make gen-openapi   # after changing routes
+make gen-openapi   # after changing routes (also regenerates the web app's typed client)
+make web-dev       # the web app with hot reload on http://localhost:5173, against `make up`
+make e2e           # Playwright against a throwaway stack (SCREENSHOTS=1 also saves a visual tour)
 make test-reset    # drop the test database (needed after editing docker/db/roles.sql)
 ```
 

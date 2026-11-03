@@ -8,11 +8,16 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 # Node 25+ no longer bundles corepack; install the pnpm that packageManager pins.
 RUN npm install -g "$(node -p 'require("./package.json").packageManager')"
 COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
 COPY packages/shared/package.json packages/shared/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY packages/shared packages/shared
 COPY apps/api apps/api
+COPY apps/web apps/web
+COPY openapi.json ./
+# The web app builds into apps/api/web, which the API serves.
 RUN pnpm --filter @macrotracker/shared build \
+ && pnpm --filter @macrotracker/web build \
  && pnpm --filter @macrotracker/api build \
  && pnpm --filter @macrotracker/api deploy --prod --legacy /out
 

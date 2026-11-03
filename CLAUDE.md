@@ -44,6 +44,11 @@ which sits on the same network as the test `db` and `auth`.
   checks every row validates with no column dropped. Refresh it with `scripts/sync-engine-fixtures.sh` whenever the
   app's synced tables change.
 - **Reference foods (USDA, INDB) never reach the server.** INDB may not be redistributed.
+- **The web app follows the app's design system** (MacroTracker `docs/design/DESIGN.md`): tokens in
+  `apps/web/src/styles.css`, glass only on the nav bar, tab bar and sheets, solid cards for content, opaque under
+  reduced transparency / more contrast, the orb for loading. It talks to the API only through the generated client
+  (`apps/web/src/api/schema.d.ts`; `make gen-openapi`). Plain HTTP must keep working (tailnet): no secure-context-only
+  browser APIs, no `upgrade-insecure-requests` without HTTPS.
 - Free and self-hostable only: no paid services, no SMTP requirement.
 
 ## Testing

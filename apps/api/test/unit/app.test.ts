@@ -91,6 +91,8 @@ describe('browser protections', () => {
     const res = await app.inject({ url: '/healthz' });
     expect(res.headers['x-content-type-options']).toBe('nosniff');
     expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    // Plain HTTP (a tailnet address): upgrading would break the web app's assets.
+    expect(res.headers['content-security-policy']).not.toContain('upgrade-insecure-requests');
   });
 
   it('allows only configured origins', async () => {

@@ -3,7 +3,18 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', 'apps/api/drizzle/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/coverage/**',
+      'apps/api/drizzle/**',
+      'apps/api/web/**',
+      'apps/web/src/api/schema.d.ts',
+      '**/playwright-report/**',
+      '**/test-results/**',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -19,7 +30,7 @@ export default tseslint.config(
     rules: { 'no-console': 'off' },
   },
   {
-    files: ['apps/api/public/**/*.js'],
+    files: ['apps/api/public/**/*.js', 'apps/web/src/**'],
     languageOptions: { globals: { ...globals.browser } },
   },
 );

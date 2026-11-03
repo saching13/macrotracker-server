@@ -8,6 +8,21 @@
       "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./units": {
+      "development": "./src/units.ts",
+      "types": "./dist/units.d.ts",
+      "default": "./dist/units.js"
+    },
+    "./diary": {
+      "development": "./src/diary.ts",
+      "types": "./dist/diary.d.ts",
+      "default": "./dist/diary.js"
+    },
+    "./engine": {
+      "development": "./src/engine/index.ts",
+      "types": "./dist/engine/index.d.ts",
+      "default": "./dist/engine/index.js"
     }
   },
   "files": [

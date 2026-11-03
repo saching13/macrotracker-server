@@ -3,13 +3,16 @@
 #   make up      build and start db + auth + api
 #   make admin EMAIL=you@example.com   create the first admin
 #   make test    unit + integration tests against throwaway containers
+#   make e2e     web end-to-end tests (Playwright) against a throwaway stack
+#   make web-dev the web app with hot reload on :5173 (needs `make up`)
 
 DC    := docker compose
 TEST  := docker compose -p mt-test --env-file .env.test
 TOOLS := $(TEST) run --rm node
 
 .PHONY: help env up down logs ps admin shell install lint typecheck format \
-        test test-unit test-int test-reset gen-migration gen-openapi check-openapi build
+        test test-unit test-int test-reset gen-migration gen-openapi check-openapi build \
+        gen-api e2e web-dev
 
 help:
 	@grep -E '^#' Makefile | sed 's/^# \{0,1\}//'
@@ -66,13 +69,26 @@ test-reset:
 gen-migration: install
 	$(TOOLS) sh -c 'cd apps/api && pnpm exec drizzle-kit generate $(if $(NAME),--name $(NAME)) $(if $(CUSTOM),--custom)'
 
+# The OpenAPI document, then the web app's typed client from it.
 gen-openapi: install
 	$(TOOLS) pnpm gen:openapi
+	$(TOOLS) pnpm --filter @macrotracker/web gen:api
 
-# Fails if openapi.json is out of date with the routes.
+gen-api: install
+	$(TOOLS) pnpm --filter @macrotracker/web gen:api
+
+# Fails if openapi.json (or the web client) is out of date with the routes.
 check-openapi: gen-openapi
-	git diff --exit-code openapi.json
+	git diff --exit-code openapi.json apps/web/src/api/schema.d.ts
 
 build: install
 	$(TOOLS) pnpm build
 	$(DC) build api
+
+e2e: install
+	scripts/e2e.sh
+
+# Proxies /v1 to the API that `make up` runs on the host.
+web-dev: install
+	$(TEST) run --rm -p 127.0.0.1:5173:5173 -e API_URL=http://host.docker.internal:8080 \
+	  node sh -c 'cd apps/web && pnpm dev'

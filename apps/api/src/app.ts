@@ -23,6 +23,7 @@ import { authRoutes } from './routes/auth.js';
 import { pageRoutes } from './routes/pages.js';
 import { dataRoutes } from './routes/data.js';
 import { syncRoutes } from './routes/sync.js';
+import { webRoutes } from './routes/web.js';
 import { systemRoutes } from './routes/system.js';
 import { GoTrue } from './services/gotrue.js';
 import { version } from './version.js';
@@ -104,6 +105,9 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
         formAction: ["'self'"],
         objectSrc: ["'none'"],
         baseUri: ["'none'"],
+        // Over plain HTTP (a tailnet or LAN address) upgrading would break
+        // every script and stylesheet.
+        upgradeInsecureRequests: config.PUBLIC_URL.startsWith('https://') ? [] : null,
       },
     },
     // HSTS only makes sense once the server is behind HTTPS.
@@ -152,6 +156,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   await app.register(syncRoutes, { prefix: '/v1/sync' });
   await app.register(dataRoutes, { prefix: '/v1' });
   await app.register(pageRoutes);
+  await app.register(webRoutes);
 
   app.get('/v1/openapi.json', { schema: { hide: true } }, async () => app.swagger());
 

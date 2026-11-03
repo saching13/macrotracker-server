@@ -29,8 +29,10 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test:unit
       - run: pnpm build
-      - name: OpenAPI document is up to date
-        run: pnpm gen:openapi && git diff --exit-code openapi.json
+      - name: OpenAPI document and web client are up to date
+        run: |
+          pnpm gen:openapi && pnpm --filter @macrotracker/web gen:api
+          git diff --exit-code openapi.json apps/web/src/api/schema.d.ts
       - name: Migrations match the schema
         run: |
           cd apps/api && pnpm exec drizzle-kit check
@@ -47,6 +49,28 @@ jobs:
       - name: Service logs on failure
         if: failure()
         run: docker compose -p mt-test --env-file .env.test logs db auth
+
+  e2e:
+    name: Web end-to-end (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: scripts/e2e.sh
+      - name: Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          retention-days: 7
 
   image:
     name: Build image
