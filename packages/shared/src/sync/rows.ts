@@ -14,7 +14,7 @@ import { z } from 'zod';
 /** Drift schema versions whose rows this server understands. */
 export const SYNC_SCHEMA = { min: 11, max: 11 } as const;
 
-const id = z.string().regex(/^[A-Za-z0-9_.:-]{1,64}$/, 'not a valid row id');
+const id = z.string().regex(/^[A-Za-z0-9_.:-]{1,128}$/, 'not a valid row id');
 const text = (max = 200) => z.string().max(max);
 const num = z.number().finite();
 const qty = num.min(0);

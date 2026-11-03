@@ -1,0 +1,261 @@
+{
+ "user_profile": [
+  {
+   "id": "me",
+   "sex": "female",
+   "birth_date": "1990-04-12",
+   "height_cm": 168.5,
+   "activity_seed": "moderately_active",
+   "unit_mass": "lb",
+   "unit_energy": "kj",
+   "created_at": "2026-11-03T02:28:55.968899Z"
+  }
+ ],
+ "goals": [
+  {
+   "id": "cd59c750-138a-4e83-881d-88fc82b387e5",
+   "goal_type": "lose",
+   "start_date": "2026-11-03",
+   "start_weight_kg": 71.3,
+   "target_weight_kg": null,
+   "rate_value": 0.5,
+   "rate_unit": "mass_per_week",
+   "status": "active",
+   "created_at": "2026-11-03T02:28:55.968899Z",
+   "ended_at": null
+  }
+ ],
+ "programs": [
+  {
+   "id": "87a506ce-ed37-44b4-8955-63bc3b00e680",
+   "goal_type": "lose",
+   "rate_value": 0.5,
+   "rate_unit": "mass_per_week",
+   "diet_style": "custom",
+   "protein_policy": "g_per_kg_bodyweight",
+   "custom_protein_pct": 30,
+   "custom_carb_pct": 40,
+   "custom_fat_pct": 30,
+   "program_style": "coached",
+   "macro_style": "custom",
+   "protein_level": "moderate",
+   "day_plan": null,
+   "calorie_floor": "standard",
+   "training": "none",
+   "goal_id": "cd59c750-138a-4e83-881d-88fc82b387e5",
+   "started_at": "2026-11-03T02:28:55.968899Z",
+   "active": 1
+  }
+ ],
+ "targets": [
+  {
+   "id": "e1a6dca5-e284-51fe-82e5-5b1555d08b53",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 1
+  },
+  {
+   "id": "7bb18527-dded-5e2c-a90f-cbbd6d174fc5",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 2
+  },
+  {
+   "id": "6bda6d25-3293-532e-aab0-9142fa53828f",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 3
+  },
+  {
+   "id": "2f1a5f0c-c2b3-5c0a-9cf4-8a473d85f345",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 4
+  },
+  {
+   "id": "f0338032-ee48-5ad2-b9c2-05ed10e51cc8",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 5
+  },
+  {
+   "id": "58333236-8fcf-5f5e-900a-7efcf9d0f89e",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 6
+  },
+  {
+   "id": "cb2e9649-1eb7-5b2d-88a1-14bf8ff5fa50",
+   "effective_date": "2026-11-03",
+   "kcal": 1655.0,
+   "protein_g": 124.0,
+   "carb_g": 165.0,
+   "fat_g": 55.0,
+   "expenditure_estimate": 2204.593989561944,
+   "generated_at": "2026-11-03T02:28:56.057116Z",
+   "reason": "initial",
+   "weekday": 7
+  }
+ ],
+ "foods": [
+  {
+   "id": "f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "name": "Overnight oats",
+   "brand": "Home",
+   "barcode": "0123456789012",
+   "serving_qty": 100.0,
+   "serving_unit": "g",
+   "kcal_per_serving": 152.5,
+   "protein_g": 6.2,
+   "carb_g": 24.1,
+   "fat_g": 3.3,
+   "fiber_g": 4.0,
+   "saturated_fat_g": 0.6,
+   "trans_fat_g": 0.0,
+   "cholesterol_mg": 2.0,
+   "sodium_mg": 40.0,
+   "sugar_g": 7.5,
+   "source": "custom",
+   "is_favorite": 1
+  }
+ ],
+ "food_servings": [
+  {
+   "id": "87d0d41d-32ea-4324-9425-f22d842a8095",
+   "food_id": "f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "label": "jar",
+   "base_amount": 250.0,
+   "sort_order": 0
+  },
+  {
+   "id": "99f7e18c-29c0-4d5c-822f-ffb2b400071e",
+   "food_id": "f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "label": "spoon",
+   "base_amount": 15.0,
+   "sort_order": 1
+  }
+ ],
+ "recipes": [
+  {
+   "id": "3c8a2f1e-5b6d-4e7f-8a9b-0c1d2e3f4a5b",
+   "name": "Oats bowl",
+   "total_kcal": 228.75,
+   "total_protein_g": 9.3,
+   "total_carb_g": 36.150000000000006,
+   "total_fat_g": 4.949999999999999,
+   "created_at": "2026-11-03T02:28:56.070366Z",
+   "servings": 2.0,
+   "total_weight_g": 150.0
+  }
+ ],
+ "recipe_items": [
+  {
+   "id": "3c8a2f1e-5b6d-4e7f-8a9b-0c1d2e3f4a5b_f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "recipe_id": "3c8a2f1e-5b6d-4e7f-8a9b-0c1d2e3f4a5b",
+   "food_id": "f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "quantity": 150.0
+  }
+ ],
+ "log_entries": [
+  {
+   "id": "9e8d7c6b-5a49-4382-9170-6f5e4d3c2b1a",
+   "local_date": "2026-10-30",
+   "meal": "breakfast",
+   "food_id": "f0b5c1de-7a51-4c1e-9d2e-2d1b0c9e8a71",
+   "recipe_id": null,
+   "quantity": 250.0,
+   "kcal": 381.25,
+   "protein_g": 15.5,
+   "carb_g": 60.25,
+   "fat_g": 8.25,
+   "health_uuid": null,
+   "created_at": "2026-11-03T02:28:56.071779Z",
+   "logged_time": "07:30",
+   "serving_label": "jar",
+   "serving_amount": 1.0
+  }
+ ],
+ "weight_entries": [
+  {
+   "id": "c6f9b93f-e302-4e42-bdb0-926ed14f55e6",
+   "local_date": "2026-11-03",
+   "weight_kg": 71.3,
+   "source": "manual",
+   "health_uuid": null,
+   "created_at": "2026-11-03T02:28:55.968899Z"
+  }
+ ],
+ "body_metric_entries": [
+  {
+   "id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+   "local_date": "2026-10-30",
+   "metric": "waist_cm",
+   "value": 80.5,
+   "source": "manual",
+   "health_uuid": null,
+   "created_at": "2026-11-03T02:28:56.073016Z"
+  }
+ ],
+ "app_meta": [
+  {
+   "key": "body_metrics_pinned",
+   "value": "waist_cm,body_fat_pct"
+  },
+  {
+   "key": "body_metrics_visible",
+   "value": "waist_cm,hips_cm"
+  },
+  {
+   "key": "food_regions",
+   "value": "in,us"
+  },
+  {
+   "key": "insights_range",
+   "value": "90"
+  },
+  {
+   "key": "partial_days",
+   "value": "[\"2026-10-29\"]"
+  },
+  {
+   "key": "targets_update_dow",
+   "value": "0"
+  }
+ ]
+}

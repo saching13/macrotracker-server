@@ -36,6 +36,9 @@ which sits on the same network as the test `db` and `auth`.
   Engine changes start in the app (`make golden-engine` there), then `scripts/sync-engine-fixtures.sh`, then the port.
   The engine stays pure: no I/O, no database, no clock (pass `today` in).
 - **All unit conversions go through `packages/shared/src/units.ts`** (port of the app's `UnitConverter`).
+- **`fixtures/sync/wire_rows.json` is the app's real upload** (app `test/sync/wire_rows_test.dart`); `wire-rows.test.ts`
+  checks every row validates with no column dropped. Refresh it with `scripts/sync-engine-fixtures.sh` whenever the
+  app's synced tables change.
 - **Reference foods (USDA, INDB) never reach the server.** INDB may not be redistributed.
 - Free and self-hostable only: no paid services, no SMTP requirement.
 

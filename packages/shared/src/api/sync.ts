@@ -18,7 +18,7 @@ export const SYNC_PUSH_MAX = 500;
 export const SYNC_PULL_MAX = 1000;
 export const SYNC_BOOTSTRAP_MAX = 1000;
 
-const rowId = z.string().min(1).max(64);
+const rowId = z.string().min(1).max(128);
 const row = z.record(z.string(), z.unknown()).meta({
   description: 'The row as the app stores it (snake_case columns); see packages/shared/src/sync/rows.ts.',
 });

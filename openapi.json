@@ -489,7 +489,7 @@
           "id": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 64
+            "maxLength": 128
           },
           "rev": {
             "type": "integer",
@@ -1216,7 +1216,7 @@
           "id": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 64
+            "maxLength": 128
           },
           "rev": {
             "type": "integer",
@@ -2663,7 +2663,7 @@
                         "id": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 64
+                          "maxLength": 128
                         },
                         "op": {
                           "type": "string",
