@@ -1,0 +1,19 @@
+# Behind a Cloudflare Tunnel whose cloudflared container runs on another
+# Docker network (e.g. a remotely managed tunnel):
+#
+#   TUNNEL_NETWORK=<that network> docker compose -f compose.yaml -f compose.tunnel.yaml up -d --build
+#
+# and point the tunnel's public hostname at http://macrotracker-api:8080.
+# Set TRUST_PROXY to that network's subnet so rate limits and the audit log
+# see the client's address, not cloudflared's.
+services:
+  api:
+    networks:
+      default:
+      tunnel:
+        aliases: [macrotracker-api]
+
+networks:
+  tunnel:
+    name: ${TUNNEL_NETWORK:?set TUNNEL_NETWORK to the cloudflared container's network}
+    external: true

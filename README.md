@@ -78,6 +78,17 @@ tailscale serve --bg --https=443 http://127.0.0.1:8080
 and set `PUBLIC_URL=https://<machine>.<tailnet>.ts.net` and `TRUST_PROXY=true` in `.env`, then `make up` again.
 Public exposure (Cloudflare Tunnel, MCP OAuth) is a later phase.
 
+### Behind a Cloudflare Tunnel
+
+If cloudflared already runs in Docker, join its network instead of opening a port:
+
+```bash
+echo 'PUBLIC_URL=https://health.example.com' >> .env   # and TUNNEL_NETWORK, TRUST_PROXY (its subnet)
+docker compose -f compose.yaml -f compose.tunnel.yaml up -d --build
+```
+
+Then add a public hostname to the tunnel pointing at `http://macrotracker-api:8080`.
+
 ### Configuration
 
 All settings come from the environment (`.env`); the API refuses to start if any are invalid. See
