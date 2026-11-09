@@ -10,7 +10,7 @@ x-db-env: &db-env
 
 services:
   db:
-    image: supabase/postgres:17.11.0.013
+    image: supabase/postgres:17.11.0.018
     restart: unless-stopped
     environment:
       <<: *db-env
@@ -106,7 +106,7 @@ services:
   # Daily dumps of the app and auth schemas into BACKUP_DIR (default
   # ./backups); `make backup-now` for one now, scripts/restore.sh to restore.
   backup:
-    image: supabase/postgres:17.11.0.013
+    image: supabase/postgres:17.11.0.018
     restart: unless-stopped
     depends_on:
       db:
