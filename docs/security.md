@@ -51,6 +51,9 @@ someone on the internet, another account on the same server, a leaked token, and
 
 ## Choices
 
-- Sign-up is closed; accounts come only from admin invites (links shown to the admin, never emailed).
+- Sign-up is closed by default; accounts come only from admin invites (links shown to the admin, never emailed).
+  `SIGNUP=open` lets anyone who reaches the server create a member account (no email check, no SMTP). It's
+  rate-limited like sign-in and audited (`auth.signup`). Each account sees only its own data, but on a public server
+  anyone can make accounts and store data, so turn it on knowingly.
 - Deleting an account deletes all its data (cascades), including what it shared to the library.
 - MCP deletes are off by default (`MCP_DESTROY_ENABLED=false`).

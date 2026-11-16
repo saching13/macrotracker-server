@@ -101,6 +101,7 @@ All settings come from the environment (`.env`); the API refuses to start if any
 | `TRUST_PROXY`          | `true` (or proxy CIDRs) when behind tailscale serve / a tunnel.                            |
 | `API_BIND`, `API_PORT` | Where the API is published on the host (default `127.0.0.1:8080`).                         |
 | `LOG_LEVEL`            | `info` by default. Logs are JSON, carry `request_id`, and never include tokens or cookies. |
+| `SIGNUP`               | `invite` (default): admins invite people. `open`: anyone can create an account on the web. |
 
 ## API
 
@@ -121,7 +122,8 @@ All settings come from the environment (`.env`); the API refuses to start if any
 Every login is a **device** (`GET /v1/devices`). Signing a device out (`DELETE /v1/devices/{id}`) stops its access
 token immediately and refuses its refresh token. A password change or reset signs out every other device.
 
-Accounts are **invite-only**, with two roles (`admin`, `member`). The server always keeps at least one admin. Deleting
+Accounts are **invite-only** by default, with two roles (`admin`, `member`). With `SIGNUP=open`, the web sign-in page
+also offers **Create an account** (`POST /v1/auth/signup`, rate-limited like sign-in), which makes a member. The server always keeps at least one admin. Deleting
 an account removes all of its data. Security events (logins, failures, tokens, admin actions) go to an audit log
 (`GET /v1/admin/audit`).
 

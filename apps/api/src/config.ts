@@ -63,6 +63,12 @@ const configSchema = z.object({
       }
     }, 'not an IANA timezone'),
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(20),
+  /**
+   * Who can create an account. `invite` (default): only admins, by invite
+   * link. `open`: anyone who can reach the server can sign up from the web
+   * app (`POST /v1/auth/signup`) as a member.
+   */
+  SIGNUP: z.enum(['invite', 'open']).default('invite'),
 });
 
 export type Config = z.infer<typeof configSchema>;

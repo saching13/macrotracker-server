@@ -65,6 +65,7 @@
             "type": "string",
             "enum": [
               "invite",
+              "open",
               "closed"
             ]
           }
@@ -1593,6 +1594,7 @@
             "type": "string",
             "enum": [
               "invite",
+              "open",
               "closed"
             ]
           }
@@ -3220,6 +3222,122 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/signup": {
+      "post": {
+        "summary": "Create an account (servers with open sign-up)",
+        "tags": [
+          "auth"
+        ],
+        "description": "Creates a member account with this email and password and signs it in. Refused with 403 `signup_closed` unless the server runs with `SIGNUP=open`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "maxLength": 320,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 256
+                  },
+                  "display_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "device": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "platform": {
+                        "type": "string",
+                        "enum": [
+                          "ios",
+                          "android",
+                          "web",
+                          "cli",
+                          "other"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "platform"
+                    ]
+                  },
+                  "client": {
+                    "default": "app",
+                    "type": "string",
+                    "enum": [
+                      "web",
+                      "app"
+                    ]
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "device"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }

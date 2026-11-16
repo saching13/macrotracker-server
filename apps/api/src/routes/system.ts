@@ -6,7 +6,7 @@ import { version } from '../version.js';
 
 /** Liveness, readiness and server metadata. None of these need auth. */
 export const systemRoutes: FastifyPluginAsyncZod = async (app) => {
-  const { db, gotrue } = app.deps;
+  const { config, db, gotrue } = app.deps;
 
   app.get(
     '/healthz',
@@ -60,7 +60,7 @@ export const systemRoutes: FastifyPluginAsyncZod = async (app) => {
       name: 'macrotracker-server' as const,
       version,
       api_version: API_VERSION,
-      signup: 'invite' as const,
+      signup: config.SIGNUP,
     }),
   );
 };

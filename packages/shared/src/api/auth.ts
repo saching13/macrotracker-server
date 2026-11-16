@@ -33,6 +33,15 @@ export const loginBody = z.object({
   client: clientKind,
 });
 
+/** Self sign-up (servers with `SIGNUP=open`): the account is a member. */
+export const signupBody = z.object({
+  email: z.email().max(320),
+  password,
+  display_name: z.string().trim().min(1).max(80).optional(),
+  device: deviceInfo,
+  client: clientKind,
+});
+
 export const refreshBody = z.object({
   refresh_token: z.string().min(1).max(512).optional(),
 });

@@ -4,6 +4,7 @@ import {
   errorBody,
   loginBody,
   refreshBody,
+  signupBody,
   session,
   type Session,
 } from '@macrotracker/shared';
@@ -14,7 +15,7 @@ import { decodeJwt } from 'jose';
 import { z } from 'zod';
 import { withContext } from '../db/client.js';
 import { appUsers, devices } from '../db/schema.js';
-import { AppError, forbidden, unauthorized } from '../errors.js';
+import { AppError, conflict, forbidden, unauthorized } from '../errors.js';
 import { authOf } from '../plugins/auth.js';
 import { audit } from '../services/audit.js';
 import type { GoTrueSession } from '../services/gotrue.js';
@@ -112,6 +113,50 @@ export const authRoutes: FastifyPluginAsyncZod = async (app) => {
       },
     };
   }
+
+  app.post(
+    '/signup',
+    {
+      config: { rateLimit: authLimit },
+      schema: {
+        tags: ['auth'],
+        summary: 'Create an account (servers with open sign-up)',
+        description:
+          'Creates a member account with this email and password and signs it in. Refused with 403 ' +
+          '`signup_closed` unless the server runs with `SIGNUP=open`.',
+        body: signupBody,
+        response: { 201: session, 403: errorBody, 409: errorBody, 422: errorBody },
+      },
+    },
+    async (req, reply) => {
+      if (config.SIGNUP !== 'open') {
+        throw forbidden('Accounts on this server are by invite', 'signup_closed');
+      }
+      const { password, device, client } = req.body;
+      const email = req.body.email.toLowerCase();
+      const user = await gotrue.adminCreateUser(email, password);
+      let inserted: { userId: string }[];
+      try {
+        // Provisioning runs as the server: the new user can't create their
+        // own app_users row under row-level security.
+        inserted = await withContext(db, { userId: user.id, isAdmin: true }, (tx) =>
+          tx
+            .insert(appUsers)
+            .values({ userId: user.id, role: 'member', displayName: req.body.display_name ?? null })
+            .onConflictDoNothing()
+            .returning({ userId: appUsers.userId }),
+        );
+      } catch (err) {
+        await gotrue.adminDeleteUser(user.id).catch(() => undefined);
+        throw err;
+      }
+      if (inserted.length === 0) throw conflict('email_exists', 'A user with this email already exists');
+      await audit(db, req, { event: 'auth.signup', userId: user.id, details: { email, client } });
+      const gs = await gotrue.passwordGrant(email, password, req.ip);
+      const result = await startSession(req, reply, gs, device, client);
+      return reply.status(201).send(result);
+    },
+  );
 
   app.post(
     '/login',

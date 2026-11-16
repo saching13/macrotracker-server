@@ -13,6 +13,8 @@ interface Auth {
   /** Undefined while the first refresh is in flight. */
   session: Session | null | undefined;
   signIn(email: string, password: string): Promise<void>;
+  /** Servers with open sign-up: create a member account and sign it in. */
+  signUp(email: string, password: string, displayName?: string): Promise<void>;
   signOut(): Promise<void>;
 }
 
@@ -41,6 +43,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const s = await unwrap(
         api.POST('/v1/auth/login', {
           body: { email, password, device: { name: browserName(), platform: 'web' }, client: 'web' },
+        }),
+      );
+      setSession(s);
+    },
+    async signUp(email, password, displayName) {
+      const s = await unwrap(
+        api.POST('/v1/auth/signup', {
+          body: {
+            email,
+            password,
+            ...(displayName ? { display_name: displayName } : {}),
+            device: { name: browserName(), platform: 'web' },
+            client: 'web',
+          },
         }),
       );
       setSession(s);

@@ -202,3 +202,84 @@ describe('change password', () => {
     expect((await login(app, user, { password: 'a-brand-new-password' })).statusCode).toBe(200);
   });
 });
+
+describe('self sign-up', () => {
+  const body = (email: string, extra: Record<string, unknown> = {}) => ({
+    email,
+    password: PASSWORD,
+    device: { name: 'Firefox on Linux', platform: 'web' },
+    client: 'app',
+    ...extra,
+  });
+
+  it('is refused on an invite-only server, and meta says so', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/v1/auth/signup',
+      payload: body(uniqueEmail('closed')),
+    });
+    expect(res.statusCode).toBe(403);
+    expect(res.json().error.code).toBe('signup_closed');
+    const meta = await app.inject({ url: '/v1/meta' });
+    expect(meta.json().signup).toBe('invite');
+  });
+
+  describe('with SIGNUP=open', () => {
+    let open: FastifyInstance;
+    beforeAll(async () => {
+      open = await testApp({ SIGNUP: 'open' });
+    });
+
+    it('creates a member, signs it in, and audits it', async () => {
+      const email = uniqueEmail('signup');
+      const res = await open.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: body(email.toUpperCase(), { display_name: 'New Person' }),
+      });
+      expect(res.statusCode).toBe(201);
+      const s = res.json<Session>();
+      expect(s.user).toMatchObject({ email, role: 'member', display_name: 'New Person' });
+      expect(s.refresh_token).toBeTruthy();
+
+      const me = await open.inject({ url: '/v1/me', headers: bearer(s.access_token) });
+      expect(me.json<Me>().email).toBe(email);
+      const again = await login(open, { id: s.user.id, email, password: PASSWORD });
+      expect(again.statusCode).toBe(200);
+      const audit = await owner.query(
+        "select 1 from app.audit_events where event = 'auth.signup' and details->>'email' = $1",
+        [email],
+      );
+      expect(audit.rowCount).toBe(1);
+      const meta = await open.inject({ url: '/v1/meta' });
+      expect(meta.json().signup).toBe('open');
+    });
+
+    it('refuses an email that already has an account', async () => {
+      const user = await createUser();
+      const res = await open.inject({ method: 'POST', url: '/v1/auth/signup', payload: body(user.email) });
+      expect(res.statusCode).toBe(409);
+      expect(res.json().error.code).toBe('email_exists');
+    });
+
+    it('refuses a short password', async () => {
+      const res = await open.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: body(uniqueEmail('short'), { password: 'short' }),
+      });
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('web sign-up sets the refresh cookie, not a body token', async () => {
+      const res = await open.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: body(uniqueEmail('web'), { client: 'web' }),
+      });
+      expect(res.statusCode).toBe(201);
+      expect(res.json<Session>().refresh_token).toBeUndefined();
+      expect(cookieOf(res, 'mt_rt')?.httpOnly).toBe(true);
+    });
+  });
+});

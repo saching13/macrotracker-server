@@ -134,6 +134,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create an account (servers with open sign-up)
+         * @description Creates a member account with this email and password and signs it in. Refused with 403 `signup_closed` unless the server runs with `SIGNUP=open`.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                        password: string;
+                        display_name?: string;
+                        device: {
+                            name: string;
+                            /** @enum {string} */
+                            platform: "ios" | "android" | "web" | "cli" | "other";
+                        };
+                        /**
+                         * @default app
+                         * @enum {string}
+                         */
+                        client?: "web" | "app";
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Session"];
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Default Response */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/login": {
         parameters: {
             query?: never;
@@ -2783,7 +2868,7 @@ export interface components {
             version: string;
             api_version: number;
             /** @enum {string} */
-            signup: "invite" | "closed";
+            signup: "invite" | "open" | "closed";
         };
         MeInput: {
             /** Format: uuid */
@@ -3113,7 +3198,7 @@ export interface components {
             version: string;
             api_version: number;
             /** @enum {string} */
-            signup: "invite" | "closed";
+            signup: "invite" | "open" | "closed";
         };
         Me: {
             /** Format: uuid */

@@ -6,7 +6,8 @@ set -eu
 cd "$(dirname "$0")/.."
 PW_VERSION=$(node -p 'require("./apps/web/node_modules/@playwright/test/package.json").version' 2>/dev/null ||
   docker run --rm -v "$PWD":/w -w /w node:26-alpine node -p 'require("./apps/web/node_modules/@playwright/test/package.json").version')
-export PUBLIC_URL=http://api:8080 API_PORT=18081
+# Open sign-up so the web sign-up flow is covered too.
+export PUBLIC_URL=http://api:8080 API_PORT=18081 SIGNUP=open
 dc() { docker compose -p mt-e2e --env-file .env.test "$@"; }
 trap 'dc down -v >/dev/null 2>&1 || true' EXIT
 

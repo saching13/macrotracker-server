@@ -20,7 +20,7 @@ export const metaResponse = z
     name: z.literal('macrotracker-server'),
     version: z.string(),
     api_version: z.number().int(),
-    signup: z.enum(['invite', 'closed']),
+    signup: z.enum(['invite', 'open', 'closed']),
   })
   .meta({ id: 'Meta' });
 export type MetaResponse = z.infer<typeof metaResponse>;
